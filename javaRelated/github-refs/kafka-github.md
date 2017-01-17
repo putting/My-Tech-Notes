@@ -8,7 +8,8 @@
 - **Summary:** Nice simple intro to Kafla producer and Spark Consumer. Recomends **Apache Avro**.
                 - Avro as a decoupling mechanism for DTO's allowing evolvable code.
                 - `JavaPairInputDStream<String, String>` for kafka stream.
-                - 
+
+
 ###4.2 SIMPLE APACHE AVRO EXAMPLE USING JAVA
 - [website](http://bigdatums.net/2016/01/20/simple-apache-avro-example-using-java/) 
 - [github](https://github.com/nsonntag/big-datums/tree/master/programming/java/big-datums/src/main/java/com/bigdatums)
