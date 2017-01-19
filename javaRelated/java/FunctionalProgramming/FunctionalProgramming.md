@@ -10,11 +10,14 @@ To avoid if then else use this pattern:
 `.map(Method Call returning boolean).orElse(false)` //Can this be used for non-Boolean methods? I presume so, but when is OrElse called when not present
 
 When calling a method from 2 other methods with slightly different subsequent calls. **Pass the method call as a Function**
-Eg Would be called using this method ref: `this::serveDownload
+Eg Would be called using this method ref: 
+```java
+this::serveDownload
                 private ResponseEntity<Resource> methodName(Function<FilePointer, ResponseEntity<Resource>> notCachedResponse) {
                                 if (cached(requestEtagOpt, ifModifiedSinceOpt))  notModified(filePointer);
                                 return notCachedResponse.apply(filePointer);  **//See how this then calls 1 or more methods defined by the caller**
-                }`
+                }
+```
 
 Also describes how servlet filters and ETag caching in browsers for resources work to ALLOW STREAMING of body.
 
