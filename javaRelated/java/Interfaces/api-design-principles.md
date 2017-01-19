@@ -13,7 +13,7 @@ Some really good tips for good api design with simple code egs:
 	`public Optional<String> getComment() {
  	return Optional.ofNullable(comment);
  	}`
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	`public String getComment() {
  	return comment; // comment is nullable
  	}`
@@ -23,7 +23,7 @@ Some really good tips for good api design with simple code egs:
 	`public Stream<String> comments() {
 		return Stream.of(comments);
  	}`
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	`public String[] comments() {
  	return comments; // Exposes the backing array!
  	}`
@@ -32,7 +32,7 @@ Some really good tips for good api design with simple code egs:
 
 	DO THIS:<p>
 	`Point point = Point.of(1,2);`
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	`Point point = new PointImpl(1,2);`
 
 - FAVOR COMPOSITION WITH FUNCTIONAL INTERFACES AND LAMBDAS OVER INHERITANCE
@@ -41,7 +41,7 @@ Some really good tips for good api design with simple code egs:
 	`Reader reader = Reader.builder()
 	 .withErrorHandler(IOException::printStackTrace)
 	 .build();`
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	`Reader reader = new AbstractReader() {
 	 @Override
 	 public void handleError(IOException ioe) {
@@ -57,7 +57,7 @@ Some really good tips for good api design with simple code egs:
 	 CircleSegment apply(Point cntr, Point p, double ang);
 	 // abstract methods cannot be added
 	 } `
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	`public interface CircleSegmentConstructor {
 	 CircleSegment apply(Point cntr, Point p, double ang);
 	 // abstract methods may be accidently added later
@@ -70,7 +70,7 @@ Some really good tips for good api design with simple code egs:
 	 addRenderer(Function<Point, String> renderer);
 	 addLogCondition(Predicate<Point> logCondition);
 	 }`
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	 `public interface Point {
 	 add(Function<Point, String> renderer);
 	 add(Predicate<Point> logCondition);
@@ -84,8 +84,9 @@ Some really good tips for good api design with simple code egs:
 	 Point end();
 	 int length();
 	 }`
-	DON’T DO THIS:<p>
-	 `public interface Line {
+	DONâ€™T DO THIS:<p>
+	 ```java
+	 public interface Line {
 	 Point start();
 	 Point end();
 	 default int length() {
@@ -95,17 +96,18 @@ Some really good tips for good api design with simple code egs:
 	 deltaX * deltaX + deltaY * deltaY
 	 );
 	 }
-	 }`
+	 }
+	 ```
 - ENSURE THAT THE API METHODS CHECK THE PARAMETER INVARIANTS BEFORE THEY ARE ACTED UPON
 
 	DO THIS:<p>
 	`public void addToSegment(Segment segment, Point point) {
-	 Objects.requireNonNull(segment);
+	 **Objects.requireNonNull(segment);**
 	 Objects.requireNonNull(point);
 	 segment.add(point);
 	}`
 
-	DON’T DO THIS:<p>
+	DONâ€™T DO THIS:<p>
 	`public void addToSegment(Segment segment, Point point) {
 	 segment.add(point);
 	} `
