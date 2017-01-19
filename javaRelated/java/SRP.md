@@ -11,7 +11,7 @@ I would keep as ONE svc as the Responsibility is to maintain DB ops on a person.
 Maybe break down into CQRS (read and write services).
 
 Also better to separate object into 2 categories:
-                a) That ‘know’ something (data holders-DOMAIN). Person POJO
+                a) That â€˜knowâ€™ something (data holders-DOMAIN). Person POJO
                 b) That do something (controllers). PersonService.
 
-Instead of trying to think in terms of responsibilities, we should think in terms of *high cohesion* (better) versus *low cohesion* (worse). Cohesion is a continuum
+Instead of trying to think in terms of responsibilities, we should think in terms of *high cohesion* (better) versus *low cohesion* (worse). Cohesion is a continuum  
