@@ -3,7 +3,7 @@
 ## Nurkiewicz. Egs from Download server and Executor Service
 Lessons learnt from:
 [link 1](http://www.nurkiewicz.com/2015/06/writing-download-server-part-ii-headers.html)
-[link 2](also http://www.nurkiewicz.com/2014/11/executorservice-10-tips-and-tricks.html)
+[link 2](http://www.nurkiewicz.com/2014/11/executorservice-10-tips-and-tricks.html)
 
 Use of Optionals whenever method params can be null.
 To avoid if then else use this pattern:
