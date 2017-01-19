@@ -6,7 +6,7 @@ Lessons learnt from:
 [link 2](http://www.nurkiewicz.com/2014/11/executorservice-10-tips-and-tricks.html)
 
 Use of Optionals whenever method params can be null.
-To avoid if then else use this pattern:
+To avoid if then else use this pattern:<p>
 `.map(Method Call returning boolean).orElse(false)` //Can this be used for non-Boolean methods? I presume so, but when is OrElse called when not present
 
 When calling a method from 2 other methods with slightly different subsequent calls. **Pass the method call as a Function**
