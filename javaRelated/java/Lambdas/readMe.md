@@ -119,3 +119,21 @@ It is especially important to have timeouts on Locks.otherwise Deadlock etc..
 - Tests (useful utilities on p102) which asserts that the correct class/method through the ex.
     Eg given `assertThrows(RodCutterException.class, () -> rodCutter.maxProfit(0));`
     
+## Chapter 6: Lazy
+
+### Instantiating Heavyweight objects lazily: Some egs of non-thread safe check null and new
+- Instead use `private Supplier<Heavy> heavy = () -> createAndCacheHeavy();` Defers instantiation
+Review as complicated, esp the way the inner class HeavyFactory is returned to 1st time then ignored after.
+``` java
+    private synchronized Heavy createAndCacheHeavy() {
+      class HeavyFactory implements Supplier<Heavy> {
+      private final Heavy heavyInstance = new Heavy();
+      public Heavy get() { return heavyInstance; }
+      }
+      if(!HeavyFactory.class.isInstance(heavy)) { //avoids null checks
+      heavy = new HeavyFactory();  //NB. See how Factory returned with 1st call. After that will be bypassed
+      }
+      return heavy.get();
+      }
+  
+```  
