@@ -73,6 +73,11 @@ totalAssetValues(assets, asset -> asset.getType() == AssetType.BOND));
       .subject("build notification")
       .body("...much better...")); 
 ```
-    
+## Handling Checked Exceptions p86
+  - You wrap a lambda with Try, returning a msg - BUT requires inspecting return for errors.
+  - ReThrow with Runtime EX. I think static helpers may be useful.
+  - define own Thrwable Functioonal Interfaces: `UseInstance<T, X extends Throwable>`. See later chapter p95 Higher Order
+  - Parallel/Concurrent much more tricky.
+  
   
   
