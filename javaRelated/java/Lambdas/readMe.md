@@ -63,10 +63,15 @@ totalAssetValues(assets, asset -> asset.getType() == AssetType.BOND));
       - c) send is a static method which accepts Consumer
 ``` java
       public static void send(final Consumer<FluentMailer> block) {
-        final FluentMailer mailer = new FluentMailer();
+        final FluentMailer mailer = new FluentMailer();  //NB. This is the input param to the Consumer
         block.accept(mailer);
         System.out.println("sending...");
         }
+    FluentMailer.send(mailer ->
+      mailer.from("build@agiledeveloper.com")
+      .to("venkats@agiledeveloper.com")
+      .subject("build notification")
+      .body("...much better...")); 
 ```
     
   
