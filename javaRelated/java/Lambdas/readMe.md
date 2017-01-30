@@ -103,3 +103,19 @@ We’ll use lambda expressions to implement the execute around method pattern, w
   //Running
   FileWriterEAM.use("eam.txt", writerEAM -> writerEAM.writeStuff("sweet"));
 ``` 
+### Managing Locks. Again Excute Around
+It is especially important to have timeouts on Locks.otherwise Deadlock etc..
+- Nice utlility method for running items with a lock.
+``` java
+    public class Locker {
+    public static void runLocked(Lock lock, Runnable block) {
+    lock.lock();
+    try {
+    block.run();
+    } finally {
+ //Running
+    runLocked(lock, () -> {/*...critical code ... */});
+```
+- Tests (useful utilities on p102) which asserts that the correct class/method through the ex.
+    Eg given `assertThrows(RodCutterException.class, () -> rodCutter.maxProfit(0));`
+    
