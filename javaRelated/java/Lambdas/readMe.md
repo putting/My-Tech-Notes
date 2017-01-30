@@ -1,7 +1,8 @@
 # Lambda Egs From Functional Programming in Java by Venkat
 Some good ideas and well worth re-caping.
 
-## Pass in predicates to filter results. p84 Fn prog in java
+## Chapter 4: Lambdas
+### Pass in predicates to filter results. p84 Fn prog in java
 ``` java
 public static int totalAssetValues(final List<Asset> assets,
 final Predicate<Asset> assetSelector) {
@@ -11,7 +12,7 @@ System.out.println("Total of bonds: " +
 totalAssetValues(assets, asset -> asset.getType() == AssetType.BOND));
 ```
 
-## DI Functions in replace of Classes/Services p87
+### DI Functions in replace of Classes/Services p87
 ``` java
   private Function<String, BigDecimal> priceFinder; //stored on class as Lookup svc
   new CalculateNAV(ticker -> new BigDecimal("6.01"));  //Can Stub/Test easily 
@@ -27,7 +28,7 @@ totalAssetValues(assets, asset -> asset.getType() == AssetType.BOND));
     new CalculateNAV(YahooFinance::getPrice);
 ```
   
-## Chain Functions together by Composing them. Like a Decorator Pattern
+### Chain Functions together by Composing them. Like a Decorator Pattern
   They can then be applied in order.
   Its like having a collection of objects (or rather methods), but fluently built up as needed.
   
@@ -52,7 +53,7 @@ totalAssetValues(assets, asset -> asset.getType() == AssetType.BOND));
     camera.setFilters(Color::brighter, Color::darker);
 ```
   
-## Replacing Builder type patterns
+### Replacing Builder type patterns
   - Smell 1: Noisy. `Mailer mailer = new Mailer(); mailer.from("build@a.com"); mailer.to("build@b.com");`
   - Smell 2: What can we do with mailer. re-use it for another mail? `mailer.send(); `
   - Refactor 1: Chain (builder style) return **this** from each method. `new MailBuilder().from("build@a.com").to( etc....`
@@ -74,11 +75,31 @@ totalAssetValues(assets, asset -> asset.getType() == AssetType.BOND));
       .subject("build notification")
       .body("...much better...")); 
 ```
-## Handling Checked Exceptions p86
+### Handling Checked Exceptions p86
   - You wrap a lambda with Try, returning a msg - BUT requires inspecting return for errors.
   - ReThrow with Runtime EX. I think static helpers may be useful.
   - define own Thrwable Functioonal Interfaces: `UseInstance<T, X extends Throwable>`. See later chapter p95 Higher Order
   - Parallel/Concurrent much more tricky.
-  
-  
-  
+
+## Chapter 5: Resources  
+We’ll use lambda expressions to implement the execute around method pattern, which gives us better control over sequencing of operations.
+
+### Closing resources properly without relying on try() using Execute Around approach.
+``` java
+//Use of higher-order fn. FileWriterEAM has static constructor and close. Hence this Builder method:
+  public static void use(final String fileName,
+  final UseInstance<FileWriterEAM, IOException> block) throws IOException {
+  final FileWriterEAM writerEAM = new FileWriterEAM(fileName);
+  try {
+  block.accept(writerEAM);
+  } finally {
+  writerEAM.close();
+  }
+  @FunctionalInterface
+  public interface UseInstance<T, X extends Throwable> {
+  void accept(T instance) throws X;
+  }
+  }
+  //Running
+  FileWriterEAM.use("eam.txt", writerEAM -> writerEAM.writeStuff("sweet"));
+``` 
