@@ -1,4 +1,5 @@
-# Lambda Egs
+# Lambda Egs From Functional Programming in Java by Venkat
+Some good ideas and well worth re-caping.
 
 ## Pass in predicates to filter results. p84 Fn prog in java
 ``` java
