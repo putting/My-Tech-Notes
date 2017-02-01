@@ -7,6 +7,22 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
                 - Returning Parent not Impl each time. find eg of this.
 
 ## Hashing & Equals
+  Different to Comparable/tor which return int. equals returns boolean & also used for Maps.
+  - Hashcode Should use `Objects.hash(name, age, passport);`
+  - Equals should use `Objects.equals(name, user.name) ....etc.`
+
+## Comparable & Comparator & Comparing are for Sorting
+  [http://www.baeldung.com/java-8-sort-lambda](http://www.baeldung.com/java-8-sort-lambda)
+  - Comparable 
+    Implement  if you want the native collections to sort etc.. **Best for default sorting of an obj.**
+  - Comparator
+    Otherwise domain obj can be compared using Comparator with lambdas
+    eg `listDevs.sort((Developer o1, Developer o2)->o1.getAge()-o2.getAge());`
+  - Comparing
+    The most succict way to create:
+    `Collections.sort(playlist1, Comparator.comparing(p1 -> p1.getTitle()).thenComparing(p1 -> p1.getDuration())`
+    Beware some Generic typing issues after the thenComparing use method refs
+      `Song::getTitle` or `Comparator.<Song>comparing(...)`
 
 ## String manipulations
                 - Use the stream collectors joining fn: `.collect(Collectors.joining(", ", "[", "]"));`
