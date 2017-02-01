@@ -13,10 +13,10 @@
   - Whats a Function?: method with NO side effects (or at least none exposed to the system).
 
 ### Functional Style
-    Our guideline is that to be regarded as functional style, a function or method can mutate only local variables. In addition, objects it references should be immutable. By this we mean all fields are final, and all fields of reference type refer transitively to other immutable objects.
-    To be regarded as functional style, a function or method **shouldn’t throw any exceptions**. USE OPTIONAl instead.
-    Might decide to use exceptions internally BUT NOT expose them via public api - use Optional.    
-    Referential transparency:  “no visible side-effects” (no mutating structure visible to callers, no I/O, no exceptions) encode the concept of referential transparency. A function is referentially transparent if it always returns the same result value when called with the same argument value. 
+  - Our guideline is that to be regarded as functional style, a function or method can mutate only local variables. In addition, objects it references should be immutable. By this we mean all fields are final, and all fields of reference type refer transitively to other immutable objects.
+  - To be regarded as functional style, a function or method **shouldn’t throw any exceptions**. USE OPTIONAl instead.
+    Might decide to use exceptions internally BUT NOT expose them via public api - use Optional.        
+  - Referential transparency:  “no visible side-effects” (no mutating structure visible to callers, no I/O, no exceptions) encode the concept of referential transparency. A function is referentially transparent if it always returns the same result value when called with the same argument value. 
 
 ### Functional style in Practice
   - No mutation
