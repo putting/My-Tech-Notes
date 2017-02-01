@@ -17,3 +17,14 @@
     - limit and findFirst that rely on the order of the elements are expensive in a parallel stream. 
     - Source of stream (supporting random index is fast for partitioning): Good: ArrayList & IntStream.range worst: Stream.iterate & LinkedList
   - Fork/Join eg for summing nos quite involved on p217. **A divinde & conquor eg.**
+  -Spliterator (new class in Java 8)
+    Like Iterators, Spliterators are used to traverse the elements of a source, but they’re also designed to do this in parallel
+    Used an eg of counting words in a sentence. Pretty sure there are some other ways.
+    **Convert String into Stream:** What about arrays: `Arrays.stream(array)` or `Stream.of(array)`
+    `Stream<Character> stream = IntStream.range(0, SENTENCE.length()).mapToObj(SENTENCE::charAt);`
+    
+## Chapter 8 Refactoring, testing, and debugging
+**I am only going to look at the refactoring with Lambdas to begin with. Return to look at CompleteableFuture after
+chapter 13 etc..**
+
+### Refactoring
