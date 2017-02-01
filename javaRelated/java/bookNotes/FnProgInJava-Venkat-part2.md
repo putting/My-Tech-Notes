@@ -1,8 +1,5 @@
 # Functional Programming in Java - Harnessing ... Notes
 
-** Overall I thought a v good book. Especially the later chapters which illustrate some good practices with complex egs **
-Some re-reading required. Good that it focusses on lambdas and not too much on Concurrency etc..
-
 ## Chapter 6 Lazy
 
 ### How java applies lazy
