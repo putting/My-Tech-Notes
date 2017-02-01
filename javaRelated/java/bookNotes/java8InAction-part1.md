@@ -27,4 +27,50 @@
 **I am only going to look at the refactoring with Lambdas to begin with. Return to look at CompleteableFuture after
 chapter 13 etc..**
 
-### Refactoring
+### Refactoring (some good tips)
+  - Anon Classes to lambdas
+    - `Runnable r2 = () -> System.out.println("Hello World");`
+    - NB. **this** in lambda refers to the enclosing class.
+    - Lambdas cannot shadow vars from enclosing class
+    - Ambiguos Functional Interfaces: Let’s say you’ve declared a functional interface with the same signature as Runnable, here called
+      Task (this might occur when you need interface names that are more meaningful in your domain model)
+      **Cast (Task) is required to compile**
+```java
+      interface Task{ public void execute(); }
+      doSomething((Task)() -> System.out.println("Danger danger!!"));  
+```
+  - Use method references rather than lambdas where more than 1 line, as help ledgability
+      Use static method refs provided by jdk (summing):
+      `int totalCalories = menu.stream().collect(summingInt(Dish::getCalories));`
+  - When to use FI?
+    - a) Conditional deferred execution
+        eg logger.log(Level.FINER, () -> "Problem: " + generateDiagnostic());` Also where && and ||
+    - b) Execute around p241
+      Especially when commoonly surrounding code with some logic.
+      eg. `public interface BufferedReaderProcessor { String ocess() throws IOException;          
+      This can then be passed as param in method and called like this: `processFile(BufferedReader b -> b.readline);`
+    - Design Patterns
+      - Strategy
+        Saves creating single method concrete classes. Replace ValidatorStrategy interface with lambdas: 
+        'Validator val = new Validator((String s) -> s.matches("regEX");)`
+      - Template
+        Previously use `abstract void makeCustomerHappy(Customer c);` in abstract parent class.
+        now just pass in the diff consumers.
+            `public void processCustomer(int id, Consumer<Customer> makeCustomerHappy){
+            Customer c = Database.getCustomerWithId(id);
+            makeCustomerHappy.accept(c);}`
+      - Observer
+        Can implement the Observer notify method using lambda. **BUT only when method is small**
+        eg. f.registerObserver((String tweet) -> {if(tweet != null && tweet.contains("money")){System.out.println("Breaking news in NY! " + tweet);}`
+      - Chain of Responsability
+        This is a very functional approach. Normally implemented by defining a succesor to a process.
+        With lambda we compose functions:
+        `UnaryOperator<String> fn1 = (String text) -> text.replaceALl("a", "b");`  //... and another fn2
+        `Function<String, String> pipeline = f1.andThen(f2); pipeline.apply("Some text");
+        - Factory
+          Normally use a switch statement to determine sub class to create. Use a HasMap & lambdas instead.
+``` java
+          final static Map<String, Supplier<Product>> map = new HashMap<>();
+          static {map.put("loan", Loan::new); ...} then Supplier<Product> p = map.get(name); return p.get();
+```
+      
