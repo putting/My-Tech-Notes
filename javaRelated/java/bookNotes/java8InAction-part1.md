@@ -73,4 +73,11 @@ chapter 13 etc..**
           final static Map<String, Supplier<Product>> map = new HashMap<>();
           static {map.put("loan", Loan::new); ...} then Supplier<Product> p = map.get(name); return p.get();
 ```
-      
+  - Testing
+    There are problems with testing lambdas as they don't have names.
+      - Put lambda in a static instance var returning Fn so can be tested: 
+      `public final static Comparator<Point> compareByXAndThenY = comparing(Point::getX).thenComparing(Point::getY);`
+      then test using `Point.compareByXAndThenY.compare(p1 , p2);`
+      - Use Method Refs instead of lambdas
+      - Debuigging stack traces more difficult $$Lambda$1 etc.. Sometime not even with method refs
+   
