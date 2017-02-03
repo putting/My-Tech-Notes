@@ -105,7 +105,18 @@
     Could use .anyMatch(t -> t.getTrader().getCity().equals("Milan")) which is similar.
   - Max. I sued mapToInt then .max, whereas they used map then .reduce(Integer::max) or could have 
   manually done `reduce((t1, t2) -> t1.getValue < t2.getValue() ? t1 : t2);`
-  - Min. Also possible to do `stream.min(comparing(Transaction::GETvALUE))`
+  - Min. Also possible to do `stream.min(comparing(Transaction::GetValue))`
+
+### Creating streams
+  - Stream<String> stream = Stream.of("Java 8 ", "Lambdas ", "In ", "Action");
+  - int[] numbers = {1,2,3}; Arrays.stream().sum();
+  - try(Stream<String> lines = Files.lines(path, charset)...) catch IOException
+  - Streams from Functions & Infinite Streams `Stream.iterate(0, n -> n + 2).limit(10).forEach(System.out::println);`
+    In general, you should use iterate when you need to produce a sequence of successive values, for example, a date followed by its next date
+
+## Chapter 6 Collecting with Streams
+TODO: Lots of good stuff on grouping and partitioning.
+
 
 
 ## Chapter 14 Functional Programming Techniques
