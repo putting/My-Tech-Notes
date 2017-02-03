@@ -90,6 +90,8 @@
                 - or optional if no initial value `Optional<Integer> sum = numbers.stream().reduce((a, b) -> (a + b));`
                 - using method ref: Optional<Integer> max = numbers.stream().reduce(Integer::max);
                 - Counting using map & reduce
+                - **BE CAREFUL** reduce("", (s1, s2) -> s1 + s2) is inefficient as concatenates new strings every time.
+                  Collectors.joining uses a StringBuilder internally is much more efficient.
                 
 ### stateless vs. stateful
                 - Operations like reduce, sum, and max need to have internal state to accumulate the result.
@@ -98,7 +100,12 @@
                                 sorting requires **all the elements to be buffered** before a single item can be added to the output stream; 
                                 the storage requirement of the operation is **unbounded**.
                                 
-
+### Stream Examples
+  - I used fileter and findAny for any traders based in Milan to return boolean.
+    Could use .anyMatch(t -> t.getTrader().getCity().equals("Milan")) which is similar.
+  - Max. I sued mapToInt then .max, whereas they used map then .reduce(Integer::max) or could have 
+  manually done `reduce((t1, t2) -> t1.getValue < t2.getValue() ? t1 : t2);`
+  - Min. Also possible to do `stream.min(comparing(Transaction::GETvALUE))`
 
 
 
