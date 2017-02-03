@@ -199,9 +199,6 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
     };
     IntStream.generate(fib).limit(10).forEach(System.out::println);
 ```
-    
-## Chapter 6 Collecting with Streams
-TODO: Lots of good stuff on grouping and partitioning.
 
 
 
