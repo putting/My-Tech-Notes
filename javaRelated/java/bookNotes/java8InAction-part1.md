@@ -108,7 +108,6 @@
   - Min. Also possible to do `stream.min(comparing(Transaction::GETvALUE))`
 
 
-
 ## Chapter 14 Functional Programming Techniques
 
 ### Persistent data structures (Immutable ones)
