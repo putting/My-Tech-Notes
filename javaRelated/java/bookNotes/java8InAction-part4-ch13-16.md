@@ -1,4 +1,4 @@
-# Java 8 in Action part 2
+# Java 8 in Action
 
 [source code]()
 
