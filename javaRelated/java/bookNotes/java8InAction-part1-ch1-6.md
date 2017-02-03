@@ -115,6 +115,29 @@
     In general, you should use iterate when you need to produce a sequence of successive values, for example, a date followed by its next date
 
 ## Chapter 6 Collecting with Streams
-TODO: Lots of good stuff on grouping and partitioning.
+
+### Collectors
+  - Max: .collect(maxBy(dishCaloriesComparator));
+  - Sum: .collect(summingInt(Dish::getCalories));
+  - Averaging: .collect(averagingInt(Dish::getCalories));
+  All of the above are specialised implementations of reducing
+  - .collect(reducing(0, Dish::getCalories, (i, j) -> i + j));
+
+### Collectors vs Reduce  (Important as Collector is a thread safe mutator reduce is not)
+  - a) **reduce method** is meant to combine two values and produce a new one; it’s an **immutable** reduction. Threading issues.
+  In contrast, the   collect method is designed to mutate a container to accumulate the result it’s supposed to produce. 
+  - b) Summing: Generally choose which is most legeable & performant. In this case he mapToInt
+    - Collect reducing: `.collect(reducing(0, Dish::getCalories, Integer::sum));`
+    - Reduce:  `stream().map(Dish::getCalories).reduce(Integer::sum).get();`
+    - MapToInt: `int totalCalories = menu.stream().mapToInt(Dish::getCalories).sum();`
+
+### TODO: Grouping. Lots of sophisticated multi-layered grouping
+
+### TODO: Partitioning (Special case of group - true or false)
+
+### TODO: The Collector interface
+  There is a lot of detail here.
+
+### TODO: Developing your own Collector
 
 
