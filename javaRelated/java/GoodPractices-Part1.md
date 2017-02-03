@@ -175,4 +175,35 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
       .mapToObj(b -> new int[]{a, b, (int)Math.sqrt(a * a + b * b)})
 );
 ```
-               
+### Fibonacci Tuples using streams. eg (0,1), (1,1), (1,2) etc..
+  - Using iterate. 
+  While an array isnt the best approach its quite neat. **The main thing is to pass iterate the starting array int[]{0,1}**
+  `Stream.iterate(new int[]{0, 1},t -> new int[]{t[1], t[0]+t[1]}).limit(20).forEach(t -> System.out.println("(" + t[0] + "," + t[1] +")"));`
+  
+### Stateful side-effects (mutation) using Generate: 
+`Stream.generate(Math::random).limit(5).forEach(System.out::println);`
+  - Can use stateful Generator for Fibonacci BUT NOT THREAD SAFE. **Nasty BUT interesting**:
+  **NB A FI is used OVER a lambda as it contains instance vars which can be mutated** whereas lambda is effecitvely final
+``` java
+    IntSupplier fib = new IntSupplier(){
+      private int previous = 0;  //instance vars mutate during stream
+      private int current = 1;
+      
+      public int getAsInt() {  //method called on each generate. can still refer to instance vars
+        int oldPrevious = this.previous; //mutate in overriden FI method. Not possible in lambda
+        int nextValue = this.previous + this.current;
+        this.previous = this.current;
+        this.current = nextValue;
+        return oldPrevious;
+      }
+    };
+    IntStream.generate(fib).limit(10).forEach(System.out::println);
+```
+    
+  
+
+
+
+
+
+  
