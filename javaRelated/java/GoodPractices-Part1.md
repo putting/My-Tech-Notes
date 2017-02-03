@@ -134,7 +134,7 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
                 Template Pattern
                                 Not sure I follow exactly on p122, but replacing inheritance with composition.
                                 
-##Benchmarking
+## Benchmarking
                 - jmh: Allows you to annotate a class: `@BenchmarkMode(Mode.AverageTime)` and around method `@GenerateMicroBenchmark`
                 
 ## Optimisation
@@ -148,7 +148,7 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
                                                 logger.debug(() -> "msg:" + expensiveMethod(). ie **the logger decides**
                 - Create child to override single method.
                                 
-##Logging           
+## Logging           
                 - `logger.debug("Look at this: " + expensiveOperation());` still requires expensiveOp to be called even if **NOT** as debug level
                                 Can create a method which takes lambda `debug(Supplier<String> message)` which defers lazy init cost if not debug level.see p42 Java 8 Lambdas
                                 
@@ -156,4 +156,23 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
 ## Properties loading & getting resource
                 Properties props = new Properties();
     props.load(this.getClass().getResourceAsStream("/file.properties"));
+    
+## Uising Predicates for filtering nulls
+  - eg using a Map this.map.entrySet().stream()
+  `final Predicate<Map.Entry<?, String>> valueNotNullOrEmpty = e -> e.getValue() != null && !e.getValue().isEmpty();`
+  
+## Tuples (Java does not have)
+  - Should create a class with correct amouint of vars.
+  BUT as an eg of Pythagorus triples a * A + b * b = c * c use an array int[]{3, 4, 5}
+  caclculating c from a nd b in stream `.map(b -> new int[]{a, b, (int) Math.sqrt(a * a + b * b)});`
+  Full solution uses a stream and then another inner range to generate the 2 lots of vals:
+``` java
+    Stream<int[]> pythagoreanTriples =
+    IntStream.rangeClosed(1, 100).boxed()
+    .flatMap(a ->
+      IntStream.rangeClosed(a, 100)
+      .filter(b -> Math.sqrt(a*a + b*b) % 1 == 0)  //makes sure int not decimal
+      .mapToObj(b -> new int[]{a, b, (int)Math.sqrt(a * a + b * b)})
+);
+```
                
