@@ -39,18 +39,25 @@ List<CompletableFuture<String>> priceFutures =
 In this case if the number of async service calls you are making can be matched to exact amount of cores, then useful optimisation.
 Use Daemon threads so as not to prevent jvm termination.
 
-### Pipelining
+### Pipelining: thenCombine, thenApply, thenCompose
   - Think of streaming collections, which in turn might make service calls:
   `shops.stream.map(shop -> shop.getPrice(prod).map(Discount::applyDiscount.collect(toList());`     
   - In CF terms above is more complicated as using suppliers for CF async
 ``` java
-shops.stream.
-  map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice(prod)))
-  .map(future -> CompletableFuture.supplyAsync(() -> Discount::applyDiscount(quote))
+shops.stream.  
+  map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice(prod)))  //should be a thenApply method non async
+  .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(() -> Discount::applyDiscount(quote)) //NB thenCompose
   .collect(toList());
   return pricesFuture.stream().map(CompletableFuture::join).collect(toList()); //in 2 parts for async
 ```
-  
-
+### Reacting to a CompletableFuture completion (callbacks)
+- use thenAccept: `someCF.map(f -> f.thenAccept(System.out::println));`
+- where findPricesStream method returns Stream<CompletableFuture<String>>
+``` java
+  CompletableFuture[] futures = findPricesStream("myPhone")
+  .map(f -> f.thenAccept(System.out::println))
+  .toArray(size -> new CompletableFuture[size]);
+  CompletableFuture.allOf(futures).join();
+```
 
   
