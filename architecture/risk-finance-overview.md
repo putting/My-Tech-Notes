@@ -5,6 +5,9 @@
 ## Describes a Legerity solution, but covers most of the Items required
 [see overview diagrm](https://github.com/putting/Documentation/blob/master/architecture/overview-risk-and-finance.jpg)
 
+## DDD Entities which form part of operational store
+  - Extensive reference data and flexible hierarchies (**counterparty, accounts, organisations, time, products, product parts, units of measurement, regions, venues, locations, projects, prices/costs,discounts, rates, curves, ratings, collateral**)
+  - Interactions (**Transactions, deposit/withdrawals, orders, calls, tasks, royalties, bookings, shipments**)
 
 ### Accounting rules are easy and fast to specify
 - Simple, user defined by accountants using templates; Fast start standard
