@@ -34,7 +34,7 @@ chapter 13 etc..**
     - Lambdas cannot shadow vars from enclosing class
     - Ambiguos Functional Interfaces: Let’s say you’ve declared a functional interface with the same signature as Runnable, here called
       Task (this might occur when you need interface names that are more meaningful in your domain model)
-      **Cast (Task) is required to compile**
+      **Cast (Task) is required to compile**  
 ```java
       interface Task{ public void execute(); }
       doSomething((Task)() -> System.out.println("Danger danger!!"));  
