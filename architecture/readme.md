@@ -6,7 +6,7 @@
   - ii) DDD eg using Cargo with code based on a book. NOt Finance related but may still be useful.
   
 ### i) Legerity Overview
-  
+  [see my gh detail here](https://github.com/putting/Documentation/blob/master/architecture/risk-finance-overview.md)
   
 ### ii) Journaling & LedgerAccounts
   [source](http://lorenzo-dee.blogspot.co.uk/2013/06/domain-driven-design-accounting-domain.html)
