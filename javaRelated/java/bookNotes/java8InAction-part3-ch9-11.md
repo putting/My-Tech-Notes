@@ -89,8 +89,6 @@ return Optional.ofNullable(props.getProperty(name))
 .flatMap(OptionalUtility::stringToInt)
 .filter(i -> i > 0)
 .orElse(0);
-```
-  
-  
+``` 
 
 ## Chapter 11 CompletableFuture
