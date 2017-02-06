@@ -40,7 +40,7 @@
     you can then define lots of diffconversions
       `DoubleUnaryOperator convertCtoF = curriedConverter(9.0/5, 32); DoubleUnaryOperator convertUSDtoGBP = curriedConverter(0.6, 0);`
       and run `double gbp = convertUSDtoGBP.applyAsDouble(1000);`
-  - Persistent data structures
+  - Persistent data structures 
     
 
 ### Persistent data structures (Immutable ones)
