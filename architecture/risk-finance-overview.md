@@ -1,8 +1,8 @@
 # Risk Finance Ledger Components & Architecture
-[Legerity-oracle](file:///C:/Users/p_utt/Documents/Paul/Tech/Java/Ledgers/2015-07-02-Jeremey-Wood-Legerity-Finance-and-Risk-Coherence-SIG.pdf)
+[Legerity-oracle-source](file:///C:/Users/p_utt/Documents/Paul/Tech/Java/Ledgers/2015-07-02-Jeremey-Wood-Legerity-Finance-and-Risk-Coherence-SIG.pdf)
 
 ## Describes a Legerity solution, but covers most of the Items required
-[see overview diagrm]()
+[see overview diagrm](https://github.com/putting/Documentation/blob/master/architecture/overview-risk-and-finance.jpg)
 
 
 ### Accounting rules are easy and fast to specify
