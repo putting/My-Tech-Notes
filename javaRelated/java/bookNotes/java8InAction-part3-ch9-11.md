@@ -67,10 +67,28 @@ return Optional.of(findCheapestInsurance(person.get(), car.get()));
 } else {
 return Optional.empty();
 ```
-  with 
+  with & this demos some v important ideas about chaining
   `public Optional<Insurance> nullSafeFindCheapestInsurance(Optional<Person> person, Optional<Car> car) {
 return person.flatMap(p -> car.map(c -> findCheapestInsurance(p, c)))`
-
+Invoke a flatMap on the first optional, if  empty, the lambda expression passed to it won’t be executed at all and this invocation will just return an empty optional. Conversely, if the person is present, it uses it as the input of a Function returning an
+Optional<Insurance> as required by the flatMap method. The body of this function invokes a map on the second optional, so if it doesn’t contain any car, the Fn will return an empty optional and so will the whole nullSafeFindCheapestInsurance method. Finally, if both the person and the car are present, the lambda expression passed as argument to the map method can safely invoke the original findCheapestInsurance method with them.
+- Filtering based on predicate (replace if test then):
+  `Optional<Insurance> optInsurance = ...; 
+    optInsurance.filter(insurance -> "CambridgeInsurance".equals(insurance.getName()))
+    .ifPresent(x -> System.out.println("ok"));`
+    
+###  Replacing 3rd party libs that return null (the following can be used as utility Optional classes)
+  - Wrap the return from a method with map get: `Optional<Object> value = Optional.ofNullable(map.get("key"));`
+  - Not sure about wrapping Integer.parseint(str) NumberFormatEx into Optional.empty (see p305)
+  - **Don't use primitive optionals as dont provide flatMap & filter methods.**
+  - eg reading from a properties file:
+``` java
+return Optional.ofNullable(props.getProperty(name))
+.flatMap(OptionalUtility::stringToInt)
+.filter(i -> i > 0)
+.orElse(0);
+```
+  
   
 
 ## Chapter 11 CompletableFuture
