@@ -8,10 +8,13 @@
 - Good , but the calling thread will still need to check and get value (which is blocking (with timeout)).
 
 ### CompletableFuture methods
-  - Converting a synchronous api method call to async
-  - Can make a method async and return CF as |Future and then do get on it.
+  - Converting a synchronous api method call to async by wrapping invocation in CompletableFuture.
+  - Can make a method (or api call) async and return CF as Future and then do get on it.
   - **NB. Excedtions get lost in async threads** This can block the calling thread get() unless a Timout specified.
   But better to do cfuturePrice.completeExceptionally(ex) in async method.
+  - CF allows exception propogation.
+  - Register callbacks.
+  - Can combine, wait for all/one CF's to complete
   
 ### Factory methods
   - Supply Async: `CompletableFuture.supplyAsync(() -> calculatePrice(product));` and is much more succinct than new Thread egs.
