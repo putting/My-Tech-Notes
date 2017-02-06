@@ -91,4 +91,3 @@ return Optional.ofNullable(props.getProperty(name))
 .orElse(0);
 ``` 
 
-## Chapter 11 CompletableFuture
