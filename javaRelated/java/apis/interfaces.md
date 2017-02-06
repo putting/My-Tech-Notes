@@ -18,14 +18,14 @@ knowledge of its internal representation that is unavailable to the static metho
 
 ### 3) Why use Abstract classes now?
 The abstract classes should provide the getters/setters to the instance fields. 
-Interfaces and new default methods can use the underlying methods to get access to the instance data ñ transforming in some way. 
-The key here is that interfaces donít have access directly to instance variables. Although can refer to **this**. 
+Interfaces and new default methods can use the underlying methods to get access to the instance data ‚Äì transforming in some way. 
+The key here is that interfaces don‚Äôt have access directly to instance variables. Although can refer to **this**. 
 
 ### 4) Principles:
 a) Default methods can never override instance methods, whether inherited or not.
-b) Instance methods are chosen in preference to default methods. ìclasses win over interfaces.î Important to stop new default methods changing existing behaviour.
+b) Instance methods are chosen in preference to default methods. ‚Äúclasses win over interfaces.‚Äù Important to stop new default methods changing existing behaviour.
 c) If more than one competing default method is inherited by a class, the non-overridden default method* is selected. Ie. a default method not overridden by any other
-that is also inherited by the class. That is the ëlowestí interface method ñ so not overridden by other interfaces or classes. 
-Will fail if there is NO overridden method with ìinherits unrelated defaults forÖî but you can be explicit in concrete class `Foo.Super.hello()` when calling method.
+that is also inherited by the class. That is the ‚Äòlowest‚Äô interface method ‚Äì so not overridden by other interfaces or classes. 
+Will fail if there is NO overridden method with ‚Äúinherits unrelated defaults for‚Ä¶‚Äù but you can be explicit in concrete class `Foo.Super.hello()` when calling method.
 
 TODO: Some egs required.....
