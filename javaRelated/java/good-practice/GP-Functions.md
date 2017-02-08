@@ -2,6 +2,8 @@
 
 [http://www.baeldung.com/java-8-functional-interfaces](http://www.baeldung.com/java-8-functional-interfaces)
 
+There are lkots of good code egs here
+
 ## Primitive Function Specializations
   - There is no fn, so could define as follows:
 ``` java
