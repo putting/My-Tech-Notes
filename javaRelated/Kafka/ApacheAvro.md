@@ -2,6 +2,8 @@
 
 Introduction here: [https://dzone.com/articles/introduction-apache-avro](https://dzone.com/articles/introduction-apache-avro)
 
+Main Docs: [http://avro.apache.org/docs/current/](http://avro.apache.org/docs/current/)
+
 Apache Avro is a popular data serialization format and is gaining more users, because many Hadoop-based tools natively support Avro for serialization and deserialization.
 
 What is Avro?
