@@ -126,11 +126,3 @@ Two simple jms listeners which call services. NB. The ejb Part?
                                 Implements onMessage and calls `marketDataService.updateMarketPrice(marketPrice);`
                                 Uses xml msg MarketPrice
                 - ExchangeMessageListener @MessageDriven(mappedName="jms/ExchangeToOmsJavaeeQueue")
-                
-
-
-
-==============================================================================
-Please access the attached hyperlink for an important electronic communications disclaimer:
-http://www.credit-suisse.com/legal/en/disclaimer_email_ib.html
-==============================================================================
