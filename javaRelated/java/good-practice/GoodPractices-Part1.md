@@ -51,6 +51,10 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
 ## HashMaps & Lambdas
                 - computeIfAbsent/putIfAbsent **ARE ATOMIC & SO THREADSAFE**. ie will check and update within a lock.
                                 So, should also see other threads updates too.
+                  `Map<String, Integer> nameMap = new HashMap<>(); Integer value = nameMap.computeIfAbsent("John", s -> s.length());`
+                  **NB** The s parameter defaults to using the first param. ie **the key** So this inserts "John" as key
+                  and the value of 4. in this case, will be calculated by applying a function to a key, put inside a map and also
+                  returned from a method call.
                 - putting: `artistCache.computeIfAbsent(name, this::readArtistFromDB);`
                 - iterating over: `albumsByArtist.forEach((artist, albums) -> {countOfAlbums.put(artist, albums.size());`
                 
@@ -142,14 +146,14 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
                                 eg. `arrayListOfNumbers.parallelStream().mapToInt(x -> x * x).sum();`
 
 ## Refactoring to Lambdas
-                - If you find that your code is repeatedly querying and operating on an object only to push a value 
-                                back into that object at the end, then that code belongs in the class of the object that you’re modifying.
-                                The eg given id the logger.isDebugEnabled logger.debug(); should be easily solved by passing in code as data:
-                                                logger.debug(() -> "msg:" + expensiveMethod(). ie **the logger decides**
-                - Create child to override single method.
-                                
+   - If you find that your code is repeatedly querying and operating on an object only to push a value back into that
+     object at the end, then that code belongs in the class of the object that you’re modifying.
+     The eg given id the logger.isDebugEnabled logger.debug(); should be easily solved by passing in code as data:
+     logger.debug(() -> "msg:" + expensiveMethod(). ie **the logger decides**
+  - Create child to override single method.
+
 ## Logging           
-                - `logger.debug("Look at this: " + expensiveOperation());` still requires expensiveOp to be called even if **NOT** as debug level
+   - `logger.debug("Look at this: " + expensiveOperation());` still requires expensiveOp to be called even if **NOT** as debug level
                                 Can create a method which takes lambda `debug(Supplier<String> message)` which defers lazy init cost if not debug level.see p42 Java 8 Lambdas
                                 
                 
