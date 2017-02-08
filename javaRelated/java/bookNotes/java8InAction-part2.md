@@ -42,9 +42,9 @@ chapter 13 etc..**
   - Use method references rather than lambdas where more than 1 line, as help ledgability
       Use static method refs provided by jdk (summing):
       `int totalCalories = menu.stream().collect(summingInt(Dish::getCalories));`
-  - When to use FI?
+  - When to use Functional Interfaces?
     - a) Conditional deferred execution
-        eg logger.log(Level.FINER, () -> "Problem: " + generateDiagnostic());` Also where && and ||
+        `eg logger.log(Level.FINER, () -> "Problem: " + generateDiagnostic());` Also where && and ||
     - b) Execute around p241
       Especially when commoonly surrounding code with some logic.
       eg. `public interface BufferedReaderProcessor { String ocess() throws IOException;          
