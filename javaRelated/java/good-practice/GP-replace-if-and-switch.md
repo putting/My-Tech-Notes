@@ -1,6 +1,27 @@
 # Replacing Nested if and switch statements
 
-I haven't really found a very simple solution, but the following give pointers.
+Probably the best solution is this (given this sort of code):
+``` java
+for (int number : numbers) {
+    if (number % 2 == 0) {
+        int n2 = number * 2;
+        if (n2 > 5) {
+            System.out.println(n2);
+            break;
+        }
+    }
+}
+```
+  - a) Replace if test with a method.
+  - b) You can then use for loops and `if (isEven(n)) l1.add(n); ...`
+  - c) **Use  streams for more fluent approach as below:**
+``` java
+numbers.stream()
+            .filter(Lazy::isEven)
+            .map(Lazy::doubleIt)
+            .filter(Lazy::isGreaterThan5)
+            .findFirst()
+```
 
 ## Interesting first Operator switch type problem
 ``` java
