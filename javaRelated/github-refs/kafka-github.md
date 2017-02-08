@@ -21,7 +21,7 @@
   kafka-server-start.bat ../../config/server.properties
 
   - Create topics
-  Althougn running the Producer-Consumer code appears to set up correctly
+  Although running the Producer-Consumer code appears to set up correctly
   kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --toipc paultopic
 
   alter a topic to have 2 partitions
@@ -33,4 +33,4 @@
 - [github](https://github.com/nsonntag/big-datums/tree/master/programming/java/big-datums/src/main/java/com/bigdatums)
 - **Author:** Big Datums
 - **Summary:** Simple eg of how a domain object can be evolved using Avro. Check out other source code too. A bunch of interview related stuff and hashing , uuid.
-                - Shows how to serialise/de-serialise.
+- Shows how to serialise/de-serialise.
