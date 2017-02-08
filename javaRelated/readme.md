@@ -1,9 +1,25 @@
-#ReadMe
+# Java Stuff to Remember
 
-Java eg for formatting:
-```java
-System.out.println("Hello World!");
-```
+### Use These Libraries
+  - Mockito: [link](https://dzone.com/articles/mocking-the-unmockable-the-mockito2-way)
+  - logback: 
+  - Swagger & HAL: Use these for documenting APIs with lots of extras around discovery
+  - mountebank: first open source tool to provide cross-platform, multi-protocol test doubles over the wire. TODO: Investigate [http://www.mbtest.org/](http://www.mbtest.org/)
+  - Vagrant: Can be used to vreate virtual Cloud on PC
+  - Docker: Is a PaaS
+  - Puppet Chef and Ansible: Helps with config & Deploying artifacts.
+  - Rx Observalbles (Marbles): Good visual way of displaying functionality [http://rxmarbles.com/](http://rxmarbles.com/)
+  - Structre 101 & SchemaSpy: Graphic display of java package dependencies. Schema spy does same for dB tables.
+    [http://schemaspy.sourceforge.net/](http://schemaspy.sourceforge.net/)
+  - Vert.x (async) vs Tomcatv(http) vs Jetty
+  - Vmlens: tool to detect race conditions
+  - Jooq: Provides a DSL for complex **SQL** querying and can return Record objects.
+  - Spark Web Framework: Good for simple web sites. [sparkjava.com]( sparkjava.com)
+  - httpie: This is a user friendly curl alternative. eg `http -v localhost:8080` [https://httpie.org/](https://httpie.org/)
+  - LogRotate, Logstash or splunk: for monitoring
+  - Apache commons ImmutablePair
+  
+
 
 [//]: # (Contains links only and removed by processor)
 
