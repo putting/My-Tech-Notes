@@ -11,6 +11,10 @@ What is Avro?
   - Uses JSON based schemas
   - Uses RPC calls to send data
   - Schema's sent during data exchange
+  
+Avro relies on schemas so as to provide efficient serialization of the data. The schema is written in JSON format and describes the fields and their types. There are 2 cases:
+  - when serializing to a file, the schema is written to the file.
+  - in RPC - such as between Kafka and Spark - both systems should know the schema prior to exchanging data, or they could exchange the schema during the connection handshake.  
 
 A bunch of dzone articles
   - Convert CSV Data to Avro Data [https://dzone.com/articles/convert-csv-data-avro-data](https://dzone.com/articles/convert-csv-data-avro-data)
