@@ -59,7 +59,7 @@ Ojava.util.Objects.requireNonNull(param var) //Makes sure invariants are kept. O
                 - iterating over: `albumsByArtist.forEach((artist, albums) -> {countOfAlbums.put(artist, albums.size());`
                 
 ## Replacing if and switch with lambdas
-                - track down email.
+  [see here my gh](https://github.com/putting/Documentation/blob/master/javaRelated/java/good-practice/GP-replace-if-and-switch.md)
 
 ## Parallel Streams
                 - Under the hood use the Fork/Join framework to divide up elements os stream.
