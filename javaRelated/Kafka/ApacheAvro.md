@@ -16,7 +16,12 @@ Avro relies on schemas so as to provide efficient serialization of the data. The
   - when serializing to a file, the schema is written to the file.
   - in RPC - such as between Kafka and Spark - both systems should know the schema prior to exchanging data, or they could exchange the schema during the connection handshake.  
 
-A bunch of dzone articles
+### Bijection, by Twitter
+
+Now, we could use Avro’s API to serialize and deserialize objects but this is not the most friendly API. Instead, we will use Bijection which makes it easy to convert objects back and forth.
+[Exampple code here](http://aseigneurin.github.io/2016/03/04/kafka-spark-avro-producing-and-consuming-avro-messages.html)
+
+### A bunch of dzone articles
   - Convert CSV Data to Avro Data [https://dzone.com/articles/convert-csv-data-avro-data](https://dzone.com/articles/convert-csv-data-avro-data)
   - MapReduce: [https://dzone.com/articles/mapreduce-avro-data-files](https://dzone.com/articles/mapreduce-avro-data-files)
   - Avro's Built-In Sorting [https://dzone.com/articles/avros-built-sorting](https://dzone.com/articles/avros-built-sorting)
