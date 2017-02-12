@@ -2,6 +2,7 @@
 
 ### MUST Read
   - [Banking eg of Rx, MS & REST](https://github.com/putting/Documentation/blob/master/javaRelated/java/Reactive/banking-eg-rx-aka-ms.md)
+  - [DDD BullsFirst eg good - see noted](https://github.com/matthewjosephtaylor/java-blockchain)
 
 ### Use These Libraries
   - Mockito: [link](https://dzone.com/articles/mocking-the-unmockable-the-mockito2-way)
