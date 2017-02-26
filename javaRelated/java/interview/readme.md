@@ -1,3 +1,7 @@
 ## Common Interview Problems
 
-1. Finbonacci, Blocking Queue & Nearest Points
+- Finbonacci
+- Blocking Queue
+- Nearest Points
+
+TODO: BubbleSOrt, FizzBuzz and memory leaks
