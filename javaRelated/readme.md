@@ -23,7 +23,9 @@
   - LogRotate, Logstash or splunk: for monitoring
   - Apache commons ImmutablePair
   
-
+### Points of Interest
+  - You can get the version of software deployed (compiled) like this: Utils.class.getPackage().getImplementationVersion();
+    Where Utils is just a class the class this code is contained in. Make available through REST
 
 [//]: # (Contains links only and removed by processor)
 
