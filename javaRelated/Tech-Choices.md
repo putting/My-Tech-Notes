@@ -62,7 +62,10 @@
                                 You still need to protect member variables from Threads.
                                 However, the SLSB (stateless EJB) should not be used to keep a state. The EJB is pooled, so you don't have any guarantee that you will return to the same instance. The SFSB is made for this purpose.
                                 The EntityManager, as every instance field in the EJB, is thread safe.                       
-                  
+
+## Querying SQl and No-SQL
+  - [Apache Drill](https://drill.apache.org/)
+
 ## JEE vs Spring
                 -[Full JEE7 with egs- READ](https://dzone.com/refcardz/java-enterprise-edition-7)
                                 - New subsystems in 7: WebSocket, Batch, Json & Concurrency.
@@ -117,7 +120,10 @@
                                 
 ## Jetty vs Spring Boot
                 - Spring Boot for RESTful (MVC) svc, with embedded jetty/tomcat.
-                                
+## Remote Procedure Calls 
+  - gRPC from google is a bi-directional RPC. Uses protocol buffers by default.
+  - JavaRx?
+ 
 ## ORMs
                 - Hibernate
                 - JPA (part of JEE)
