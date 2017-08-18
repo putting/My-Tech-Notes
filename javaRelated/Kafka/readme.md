@@ -1,6 +1,10 @@
 # Kafka
 One of the main principles is 'Build applications, not infrastructure'. So kafka is embedded in apps and doesn't require expensive infrastructure. Clients will auto-discover each other. You should use Docker or similar to deploy multiple instances.
 
+## Kafka Connect (A Confluent product. Confluent is a distribution of Kafka)
+Connects data to/from Kafka. A source connector can ingest entire databases and stream table updates to Kafka topics.
+[intro](http://docs.confluent.io/current/connect/intro.html#connect-intro)
+
 [Kafka & Avro github notes here](https://github.com/putting/Documentation/blob/master/javaRelated/github-refs/kafka-github.md)
 
 also see
