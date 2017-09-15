@@ -17,7 +17,8 @@
            AND pl_secondary_owner_key3 = :itemNum
 >>
   ``` 
-- Generic wrapper run query in dbi
+- Generic wrapper run query in dbi.
+*Not sure how the sql get injected from above into the createQuery using the queryName*
 ```java
     private <T> List<T> runExternalQuery(String queryName, QueryConfigurator<T> queryConfigurator) {
         return dbi.withHandle(handle -> {
@@ -25,6 +26,9 @@
 
             return queryConfigurator.configure(handle.createQuery(queryName)).list();
         });
+    }
+    private interface QueryConfigurator<T> {
+      Query<T> configure(Query<Map<String, Object>> query);
     }
 ```
 - Each query is run like this. 
