@@ -1,0 +1,361 @@
+# Via annotation can generate a WS client from any interface
+
+```java
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercuria.dali.rest.*;
+import com.squareup.javapoet.*;
+import okhttp3.ResponseBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import retrofit2.Call;
+import retrofit2.http.PATCH;
+import retrofit2.http.Streaming;
+
+import javax.annotation.Generated;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.ZonedDateTime;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.mercuria.dali.annotationprocessors.RestUtils.*;
+import static javax.lang.model.SourceVersion.latestSupported;
+
+@SupportedAnnotationTypes({
+        "com.mercuria.dali.rest.RestClient"
+})
+public class RestClientGenerator extends AbstractProcessor {
+
+
+    @Override
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+
+        if (classExists("retrofit2.Retrofit")) {
+            for (Element elem : roundEnv.getElementsAnnotatedWith(RestClient.class)) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processing Rest Client services for " + elem.getSimpleName(), elem);
+                try {
+                    generateCode((TypeElement) elem, this.processingEnv.getFiler());
+                } catch (Exception e) {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage());
+                    StringWriter stringWriter = new StringWriter();
+                    e.printStackTrace(new PrintWriter(stringWriter));
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, stringWriter.toString());
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "Retrofit not on classpath, so not generating client.");
+        }
+        return true;
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return latestSupported();
+    }
+
+    private void generateCode(TypeElement type, Filer filer) throws IOException {
+
+        Elements elementUtils = processingEnv.getElementUtils();
+        PackageElement pkg = elementUtils.getPackageOf(type);
+        Path rootPathAnnotation = type.getAnnotation(Path.class);
+
+        RestClient restClientAnnotation = type.getAnnotation(RestClient.class);
+
+        AnnotationSpec generated = AnnotationSpec.builder(Generated.class)
+                .addMember("value", "$S", RestClientGenerator.class.getCanonicalName())
+                .addMember("date", "$S", ZonedDateTime.now())
+                .build();
+
+
+        String classNameAsBase = type.getSimpleName().toString();
+        if (classNameAsBase.endsWith("RestService")) {
+            classNameAsBase = classNameAsBase.replaceAll("RestService$", "");
+        }
+        String retrofitApiClassName = "Retrofit" + classNameAsBase + "ClientApi";
+        TypeSpec.Builder retrofitApiType = TypeSpec.interfaceBuilder(retrofitApiClassName)
+                .addJavadoc("This interface is generated for Retrofit to use.")
+                .addAnnotation(generated);
+
+        ClassName retrofitApi = ClassName.get(pkg.toString(), retrofitApiClassName);
+
+        boolean clientTypeSpecified = !restClientAnnotation.interfaceClass().isEmpty();
+        ClassName clientInterface = clientTypeSpecified ?
+                ClassName.bestGuess(restClientAnnotation.interfaceClass()) :
+                ClassName.get(pkg.toString(), classNameAsBase + "Client");
+
+        TypeSpec.Builder clientInterfaceType = TypeSpec.interfaceBuilder(clientInterface)
+                .addAnnotation(generated)
+                .addModifiers(Modifier.PUBLIC);
+
+        String retrofitClientName = "Retrofit" + classNameAsBase + "Client";
+        TypeSpec.Builder webClientType = TypeSpec.classBuilder(retrofitClientName)
+                .addAnnotation(generated)
+                .addSuperinterface(clientInterface)
+                .addMethods(factoryMethod(retrofitApi, retrofitClientName))
+                .addModifiers(Modifier.PUBLIC)
+                .addMethod(createClientConstructor(retrofitApi))
+                .addField(FieldSpec.builder(retrofitApi, "clientApi", Modifier.FINAL, Modifier.PRIVATE).build())
+                .addField(ObjectMapper.class, "objectMapper", Modifier.FINAL, Modifier.PRIVATE)
+                .addField(loggerField(retrofitClientName));
+
+        for (Element member : type.getEnclosedElements()) {
+            switch (member.getKind()) {
+                case METHOD: {
+                    ExecutableElement ee = (ExecutableElement) member;
+                    if (ee.getModifiers().contains(Modifier.STATIC))
+                        continue;
+                    if (ee.getModifiers().contains(Modifier.PROTECTED) || ee.getModifiers().contains(Modifier.PRIVATE))
+                        continue;
+
+                    Path pathAnnotation = member.getAnnotation(Path.class);
+                    if (pathAnnotation == null) {
+                        continue;
+                    }
+
+                    String methodName = member.getSimpleName().toString();
+
+                    TypeName returnType = TypeName.get(ee.getReturnType());
+
+                    String parametersForCall = ee.getParameters().stream()
+                            .filter(variableElement -> parameterShouldBeIncludedInClient(variableElement, type))
+                            .map(param -> param.getSimpleName().toString())
+                            .collect(Collectors.joining(", "));
+
+                    MethodSpec.Builder retrofitApiMethod = MethodSpec.methodBuilder(methodName)
+                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                            .addAnnotation(determineRetrofitMethodType(member, restPath(rootPathAnnotation, pathAnnotation)))
+                            .returns(retrofitInterfaceReturnType(returnType));
+
+                    TypeName clientReturnType = clientReturnType(member, returnType);
+
+                    MethodSpec.Builder clientApiMethod = MethodSpec.methodBuilder(methodName)
+                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                            .returns(clientReturnType);
+
+                    MethodSpec.Builder webClientMethod = MethodSpec.methodBuilder(methodName)
+                            .addModifiers(Modifier.PUBLIC)
+                            .addAnnotation(Override.class)
+                            .returns(clientReturnType)
+                            .addStatement("$T responseSupplier = () -> this.clientApi.$L($L)", ParameterizedTypeName.get(ClassName.get(Supplier.class), retrofitInterfaceReturnType(returnType)), methodName, parametersForCall);
+
+                    boolean statementShouldReturn = statementShouldReturn(returnType);
+                    Streamed streamed = member.getAnnotation(Streamed.class);
+                    if (Objects.nonNull(streamed)) {
+                        webClientMethod = webClientMethod.addStatement("return $T.streamValues(LOGGER, responseSupplier, objectMapper, $T.class)", RetrofitHelper.class, ClassName.bestGuess(streamed.originalType()));
+                        retrofitApiMethod = retrofitApiMethod.addAnnotation(Streaming.class);
+                    } else if (statementShouldReturn && isResponseWrapper(returnType)) {
+                        webClientMethod = webClientMethod.addStatement("return $T.getValue(LOGGER, responseSupplier, false).getBody()", RetrofitHelper.class);
+                    } else {
+                        webClientMethod = webClientMethod.addStatement((statementShouldReturn ? "return " : "") + "$T.getValue(LOGGER, responseSupplier, $L)", RetrofitHelper.class, isOptional(returnType));
+                    }
+
+                    MethodSpec.Builder directClientMethod = MethodSpec.methodBuilder(methodName)
+                            .addModifiers(Modifier.PUBLIC)
+                            .addAnnotation(Override.class)
+                            .returns(clientReturnType)
+                            .addStatement((statementShouldReturn ? "return " : "") + "this.service.$L($L)", methodName, parametersForCall);
+
+                    for (VariableElement ve : ee.getParameters()) {
+                        TypeName parameterType = TypeName.get(ve.asType());
+                        String parameterName = ve.getSimpleName().toString();
+
+                        QueryParam queryParam = ve.getAnnotation(QueryParam.class);
+                        PathParam pathParam = ve.getAnnotation(PathParam.class);
+                        boolean parameterShouldBeIncludedInClient = parameterShouldBeIncludedInClient(ve, type);
+
+                        if (queryParam != null) {
+                            retrofitApiMethod = retrofitApiMethod.addParameter(ParameterSpec.builder(parameterType, parameterName)
+                                    .addAnnotation(AnnotationSpec.builder(retrofit2.http.Query.class).addMember("value", "$S", queryParam.value()).build()).build());
+                        } else if (pathParam != null) {
+                            retrofitApiMethod = retrofitApiMethod.addParameter(ParameterSpec.builder(parameterType, parameterName)
+                                    .addAnnotation(AnnotationSpec.builder(retrofit2.http.Path.class).addMember("value", "$S", pathParam.value()).build()).build());
+                        } else if (parameterShouldBeIncludedInClient) {
+                            retrofitApiMethod = retrofitApiMethod.addParameter(ParameterSpec.builder(parameterType, parameterName)
+                                    .addAnnotation(AnnotationSpec.builder(retrofit2.http.Body.class).build()).build());
+                        }
+
+                        if (parameterShouldBeIncludedInClient) {
+                            clientApiMethod.addParameter(ParameterSpec.builder(parameterType, parameterName).build());
+                            webClientMethod.addParameter(ParameterSpec.builder(parameterType, parameterName).build());
+                            directClientMethod.addParameter(ParameterSpec.builder(parameterType, parameterName).build());
+                        }
+                    }
+                    retrofitApiType = retrofitApiType.addMethod(retrofitApiMethod.build());
+                    webClientType = webClientType.addMethod(webClientMethod.build());
+                    clientInterfaceType = clientInterfaceType.addMethod(clientApiMethod.build());
+                }
+            }
+        }
+
+        JavaFile.builder(pkg.toString(), retrofitApiType.build()).build()
+                .writeTo(filer);
+
+        JavaFile.builder(pkg.toString(), webClientType.build()).build()
+                .writeTo(filer);
+
+        if (!clientTypeSpecified) {
+            JavaFile.builder(pkg.toString(), clientInterfaceType.build()).build().writeTo(filer);
+        }
+    }
+
+    private boolean parameterShouldBeIncludedInClient(VariableElement variableElement, TypeElement typeElement) {
+        boolean hasContextAnnotation = variableElement.getAnnotation(Context.class) != null;
+        return !(hasContextAnnotation || variableTypeIsMentionedInAnnotation(typeElement, variableElement));
+    }
+
+    private boolean variableTypeIsMentionedInAnnotation(TypeElement typeElement, VariableElement variableElement) {
+        TypeName variableType = TypeName.get(variableElement.asType());
+
+        //pretty nasty stuff, but you can't just get the class out of the annotation
+        //http://hauchee.blogspot.co.uk/2015/12/compile-time-annotation-processing-getting-class-value.html
+        return typeElement.getAnnotationMirrors().stream()
+                .filter(am -> {
+                    TypeElement element = (TypeElement) am.getAnnotationType().asElement();
+                    return ClassName.get(element).equals(ClassName.get(RestClient.class));
+                })
+                .flatMap(am -> {
+                    Optional<? extends AnnotationValue> paramTypesToIgnore = am.getElementValues()
+                            .entrySet()
+                            .stream()
+                            .filter(ee -> ee.getKey().getSimpleName().toString().equals("paramTypesToIgnore"))
+                            .map(Map.Entry::getValue)
+                            .findAny();
+
+                    List<AnnotationValue> annotationValues = (List<AnnotationValue>) paramTypesToIgnore.map(av -> av.getValue()).orElse(Collections.emptyList());
+                    return annotationValues.stream();
+                })
+                .anyMatch(av -> variableType.equals(TypeName.get((TypeMirror) av.getValue())));
+    }
+
+    private List<MethodSpec> factoryMethod(ClassName retrofitApi, String retrofitClientClass) {
+        ClassName clientClassName = ClassName.bestGuess(retrofitClientClass);
+        ParameterizedTypeName returnType = ParameterizedTypeName.get(ClassName.get(RetrofitWebServiceClientBuilder.class), retrofitApi, clientClassName);
+        MethodSpec create = MethodSpec.methodBuilder("createBuilder")
+                .addModifiers(Modifier.FINAL, Modifier.PUBLIC, Modifier.STATIC)
+                .returns(returnType)
+                .addParameter(String.class, "baseUrl")
+                .addStatement("return new $T(baseUrl, LOGGER, $T.class, $L::new)", returnType, retrofitApi, retrofitClientClass)
+                .build();
+        MethodSpec build = MethodSpec.methodBuilder("create")
+                .addModifiers(Modifier.FINAL, Modifier.PUBLIC, Modifier.STATIC)
+                .returns(clientClassName)
+                .addParameter(String.class, "baseUrl")
+                .addStatement("return createBuilder(baseUrl).build()", returnType, retrofitApi, retrofitClientClass)
+                .build();
+        return Arrays.asList(create, build);
+    }
+
+    private TypeName clientReturnType(Element member, TypeName returnType) {
+        if (isResponseWrapper(returnType)) {
+            TypeName typeName = ((ParameterizedTypeName) returnType).typeArguments.get(0);
+            if (Objects.nonNull(member.getAnnotation(Primative.class))) {
+                return typeName.unbox();
+            } else {
+                return typeName;
+            }
+        } else if (Objects.nonNull(member.getAnnotation(Streamed.class))) {
+            Streamed streamed = member.getAnnotation(Streamed.class);
+            return ParameterizedTypeName.get(ClassName.get(Stream.class), ClassName.bestGuess(streamed.originalType()));
+        } else if (isJaxRsResponse(returnType)) {
+            return ClassName.get(ResponseBody.class);
+        } else {
+            return returnType;
+        }
+    }
+
+    private String restPath(Path rootPathAnnotation, Path pathAnnotation) {
+        String firstPart = rootPathAnnotation == null ? "" : rootPathAnnotation.value();
+        String secondPart = pathAnnotation == null ? "" : pathAnnotation.value();
+        return joinUrlParts(firstPart, secondPart);
+    }
+
+    private String joinUrlParts(String part1, String part2) {
+        boolean part1HasSlash = part1.endsWith("/");
+        boolean part2HasSlash = part2.startsWith("/");
+        if (part1HasSlash && part2HasSlash) {
+            return part1 + part2.substring(1);
+        } else if (part1HasSlash || part2HasSlash) {
+            return part1 + part2;
+        } else {
+            return part1 + "/" + part2;
+        }
+    }
+
+    private FieldSpec loggerField(String typeName) {
+        return FieldSpec.builder(Logger.class, "LOGGER", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
+                .initializer("$T.getLogger($S)", LoggerFactory.class, "com.mercuria.dali.rest." + typeName)
+                .build();
+    }
+
+    private boolean statementShouldReturn(TypeName returnType) {
+        return !returnType.equals(TypeName.VOID);
+    }
+
+    private MethodSpec createClientConstructor(TypeName clientApi) {
+        return MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PRIVATE)
+                .addParameter(clientApi, "clientApi")
+                .addParameter(ObjectMapper.class, "objectMapper")
+                .addStatement("this.clientApi = clientApi")
+                .addStatement("this.objectMapper = objectMapper")
+                .build();
+    }
+
+    private ParameterizedTypeName retrofitInterfaceReturnType(TypeName returnType) {
+        final TypeName actualReturnType;
+        if (returnType.isPrimitive()) {
+            actualReturnType = returnType.box();
+        } else if (TypeName.VOID.equals(returnType)) {
+            actualReturnType = ClassName.get(ResponseBody.class);
+        } else if (isJaxRsResponse(returnType)) {
+            actualReturnType = ClassName.get(ResponseBody.class);
+        } else {
+            actualReturnType = returnType;
+        }
+        return ParameterizedTypeName.get(ClassName.get(Call.class), actualReturnType);
+    }
+
+    private boolean isJaxRsResponse(TypeName returnType) {
+        return ClassName.get(javax.ws.rs.core.Response.class).equals(returnType);
+    }
+
+    private AnnotationSpec determineRetrofitMethodType(Element member, String pathSpec) {
+        final Class<?> annotationClass;
+        if (member.getAnnotation(DELETE.class) != null) {
+            annotationClass = retrofit2.http.DELETE.class;
+        } else if (member.getAnnotation(PUT.class) != null) {
+            annotationClass = retrofit2.http.PUT.class;
+        } else if (member.getAnnotation(GET.class) != null) {
+            annotationClass = retrofit2.http.GET.class;
+        } else if (member.getAnnotation(POST.class) != null) {
+            annotationClass = retrofit2.http.POST.class;
+        } else if (member.getAnnotation(PATCH.class) != null) {
+            annotationClass = retrofit2.http.PATCH.class;
+        } else if (member.getAnnotation(OPTIONS.class) != null) {
+            annotationClass = retrofit2.http.OPTIONS.class;
+        } else {
+            throw new IllegalStateException("Cannot determine type");
+        }
+        return AnnotationSpec.builder(annotationClass).addMember("value", "$S", pathSpec).build();
+
+    }
+
+}
+
+```
