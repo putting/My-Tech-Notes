@@ -1,8 +1,9 @@
 # Apache Spark
+Spark not only supports ‘Map’ and ‘reduce’. It also supports SQL queries, Streaming data, Machine learning (ML), and Graph algorithms.
 
 - RDD (Resilient Distributed Dataset) 
         [spark tutorials](https://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm)
-         A fundamental data structure of Spark. It is an immutable distributed collection of objects. Each dataset in RDD is divided into          logical partitions, which may be computed on different nodes of the cluster. RDDs can contain any type of Python, Java, or                Scala objects, including user-defined classes.
+        - A fundamental data structure of Spark. It is an immutable distributed collection of objects. Each dataset in RDD is divided into logical partitions, which may be computed on different nodes of the cluster. RDDs can contain any type of Python, Java, or                Scala objects, including user-defined classes.
          
 
 ## Spark SQL
