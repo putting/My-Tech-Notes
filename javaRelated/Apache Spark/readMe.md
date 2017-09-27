@@ -7,7 +7,7 @@
 
 ```java
         SparkConf sparkConf = new SparkConf();
-        SparkSession.Builder builder = SparkSession.builder().appName("Giant")
+        SparkSession.Builder builder = SparkSession.builder().appName("System")
                 .master(configuration.getSparkMaster())
                 .config(sparkConf);
 
