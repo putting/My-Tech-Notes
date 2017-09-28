@@ -10,8 +10,14 @@ Spark not only supports ‘Map’ and ‘reduce’. It also supports SQL queries
 [Spark SQL Docs](https://spark.apache.org/docs/latest/sql-programming-guide.html#overview)
 Spark SQL is a Spark module for structured data processing. Unlike the basic **Spark RDD API**, the interfaces provided by Spark SQL provide Spark with more information about the structure of both the data and the computation being performed.
 
-- Dataset is a distributed collection of data. Benefits of RDD but with SQL engine.
-- DataFrame is a Dataset organized into named columns
+- SchemaRDD, which provides support for structured and semi-structured data.
+- Dataset is a distributed collection of data. Benefits of RDD but with SQL engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.).
+- DataFrame is a Dataset organized into named columns (conceptually equivalent to a table in a relational database).
+
+### SQl notation using DataFrames
+- df.printSchema(), df.select("name").show(), df.filter($"age" > 21).show(), df.groupBy("age").count().show()
+- You can create views from Dfs: df.createOrReplaceTempView("viewName") and can be refered to as sql: 
+        val sqlDF = spark.sql("SELECT * FROM viewName")
 
 ## Config
 - Local only: spark-master: local[*]
@@ -34,3 +40,5 @@ Spark SQL is a Spark module for structured data processing. Unlike the basic **S
         FileUtils.forceDeleteOnExit(sparkCheckpoint.toFile());
         session.sparkContext().setCheckpointDir(sparkCheckpoint.toAbsolutePath().toString());  
 ```
+
+
