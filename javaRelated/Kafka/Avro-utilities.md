@@ -1,5 +1,10 @@
 # Avro Utilities
 
+- Mapping from a sql schema to Avro
+- Serializing & De-serializing avro schema - **good** look
+- MsgBuilder
+- ResultSet to Avro
+
 ## Mapping from a sql schema to Avro
 
 ```java
@@ -181,6 +186,107 @@ public class DDL2AvroSchema {
 
     public void setTablePredicate(Predicate<String> tablePredicate) {
         this.tablePredicate = tablePredicate;
+    }
+
+}
+
+```
+
+## Serializing & De-serializing avro schema
+
+```java
+package com.abc.dali.avro;
+
+import com.mercuria.dali.avro.conversion.InstantConversion;
+import com.mercuria.dali.avro.conversion.LocalDateConversion;
+import org.apache.avro.Conversions;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.EncoderFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
+public class AvroSerDe {
+
+    private static final byte MAGIC_BYTE = 0x0;
+    private static final int idSize = 4;
+
+    private final SchemaRegistry schemaRegistry;
+    private final boolean autoRegisterSchema;
+
+    private final EncoderFactory encoderFactory = EncoderFactory.get();
+    private final DecoderFactory decoderFactory = DecoderFactory.get();
+
+    public AvroSerDe(SchemaRegistry schemaRegistry, boolean autoRegisterSchema) {
+        this.schemaRegistry = schemaRegistry;
+        this.autoRegisterSchema = autoRegisterSchema;
+    }
+
+    public byte[] serialize(String topic, GenericRecord value) throws IOException {
+        if (value == null) {
+            return null;
+        }
+        try {
+            Schema schema = value.getSchema();
+            int id;
+            if (autoRegisterSchema) {
+                id = schemaRegistry.register(topic, schema);
+            } else {
+                id = schemaRegistry.getId(topic, schema);
+            }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            out.write(MAGIC_BYTE);
+            out.write(ByteBuffer.allocate(idSize).putInt(id).array());
+            BinaryEncoder encoder = encoderFactory.directBinaryEncoder(out, null);
+            GenericDatumWriter<Object> writer = new GenericDatumWriter<>(schema);
+            writer.getData().addLogicalTypeConversion(new Conversions.DecimalConversion());
+            writer.getData().addLogicalTypeConversion(new InstantConversion());
+            writer.getData().addLogicalTypeConversion(new LocalDateConversion());
+            writer.write(value, encoder);
+            encoder.flush();
+            byte[] bytes = out.toByteArray();
+            out.close();
+            return bytes;
+        } catch (IOException | RuntimeException e) {
+            throw new DaliAvroException("Error serializing Avro message", e);
+        }
+    }
+
+    public GenericRecord deserialize(String topic, byte[] payload, Schema readerSchema) throws IOException {
+        if (payload == null) {
+            return null;
+        }
+        int id = -1;
+        try {
+            ByteBuffer buffer = getByteBuffer(payload);
+            id = buffer.getInt();
+            Schema schema = schemaRegistry.getBySubjectAndId(topic, id);
+            int length = buffer.limit() - 1 - idSize;
+
+            int start = buffer.position() + buffer.arrayOffset();
+            GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(schema, readerSchema);
+            reader.getData().addLogicalTypeConversion(new Conversions.DecimalConversion());
+            reader.getData().addLogicalTypeConversion(new InstantConversion());
+            reader.getData().addLogicalTypeConversion(new LocalDateConversion());
+            return reader.read(null, decoderFactory.binaryDecoder(buffer.array(), start, length, null));
+
+        } catch (IOException | RuntimeException e) {
+            throw new DaliAvroException("Error deserializing Avro message for id " + id, e);
+        }
+    }
+
+    private ByteBuffer getByteBuffer(byte[] payload) {
+        ByteBuffer buffer = ByteBuffer.wrap(payload);
+        if (buffer.get() != MAGIC_BYTE) {
+            throw new DaliAvroException("Unknown magic byte!");
+        }
+        return buffer;
     }
 
 }
