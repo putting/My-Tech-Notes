@@ -3,7 +3,7 @@
 ## Mapping from a sql schema to Avro
 
 ```java
-package com.mercuria.dali.avro.tools;
+package com.abc.dali.avro.tools;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -189,7 +189,7 @@ public class DDL2AvroSchema {
 
 ## MsgBuilder
 ```java
-package com.mercuria.dali.avro.replication;
+package com.abc.dali.avro.replication;
 
 import com.mercuria.dali.avro.DaliAvroException;
 import org.apache.avro.Schema;
@@ -268,7 +268,7 @@ public class ReplicationMessageBuilder {
 ## ResultSet to Avro
 
 ```java
-package com.mercuria.dali.avro.tools;
+package com.abc.dali.avro.tools;
 
 import com.mercuria.dali.avro.util.AvroType;
 import org.apache.avro.Schema;
@@ -278,7 +278,7 @@ import org.apache.avro.generic.GenericRecordBuilder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.mercuria.dali.avro.util.AvroSchemaUtil.getFieldType;
+import static com.abc.dali.avro.util.AvroSchemaUtil.getFieldType;
 
 public class ResultSet2AvroRecord {
 
