@@ -1,8 +1,23 @@
 # Jdbi as used by Dropwizard
 
-## As used by xray
+## As used by xray. This uses jdbi templating to construct the sql
 - store sql in *.stg file with name(paramlist) and sql.
+- Uses StringTemplate3StatementLocator as shown below to inject sql
+```java
+return dbi.withHandle(handle -> {
+            handle.setStatementLocator(StringTemplate3StatementLocator.builder(ControlCheckDao.class).build());
+            return handle
+                    .createQuery("asymmetricAllocations")
+                    .map(new JdbiJsonResultSetMapper(objectMapper))
+                    .list();
+        })
+```
   ```java
+  asymmetricAllocations() ::= <<    //starts the template and holds the name
+  SQL here...  //you can bind params also
+ >> // ends here
+ 
+ 
   >>
   profitLoss(asOfDate, tradeNum, orderNum, itemNum) ::=<<
     SELECT pl_asof_date,
