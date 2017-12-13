@@ -1,8 +1,25 @@
 # Point & Distance
 
 ## Description
-Imagine you have been given a list of 20 customer's including their address details.
-Write an algorithm to work out the closest (by address) to the main delivery depot.
+Imagine you have been given a list of 20 customer's names including their address details.
+A manager is in town and only has time to visit the nearest 20 customers.
+Write an algorithm to work out the closest (by address) to the manager.
+
+## Assumptions
+- legacy table, can't change by adding columns etc..
+- small dataset to begin with. say 100 rows
+- Geolocations service. Initially can be part of solution, BUT then seen as separate service and maybe hosted externally.
+    - This is part of the 'how long to run' question
+    - Batching of request rather than single requests
+- Performance: Sorting (depending onn alg O(n2))  [http://bigocheatsheet.com/](http://bigocheatsheet.com/)
+
+## Steps
+- Take the data into a structure
+- Calculate the distance from begining point to each (and hold against name and maybe address)
+- Can then just sort and take first 10
+
+## Scala Fold design
+- Take first n records, then fold...checking if any of the next n are samller then swap etc..** O(log n)**
 
 We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
 
