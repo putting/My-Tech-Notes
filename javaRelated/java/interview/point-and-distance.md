@@ -4,6 +4,15 @@
 Imagine you have been given a list of 20 customer's including their address details.
 Write an algorithm to work out the closest (by address) to the main delivery depot.
 
+We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
+
+```java
+class Customers {
+private String name;
+private Address address; //This will be in the 20 A stret, london, EC1 format
+}
+```
+
 ## Testing the following
 - Ability to transalate an adddress into a computer useful structure. ie. Point
 - Point should have a method determin the distance between Points.
