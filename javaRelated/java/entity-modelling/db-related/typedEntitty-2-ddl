@@ -1,0 +1,165 @@
+# Utility to convert strong type to ddl
+
+```java
+/**
+ * Utility for generating a DDL file suitable for persisting Immutables types implementing VaultEntity. This can be used to
+ * generate initial Flyway scripts, or to assert that the schema created by Flyway scripts matches the structure of the
+ * object.
+ */
+public class TypedEntity2DDL {
+
+    private Map<String, String> additionalColumns = Collections.emptyMap();
+    private List<String> additionalPrimaryKeyColumns = Collections.emptyList();
+    private boolean indexInsteadOfPrimaryKey = false;
+
+    public TypedEntity2DDL() {
+    }
+
+    public void setAdditionalColumns(Map<String, String> additionalColumns) {
+        this.additionalColumns = additionalColumns;
+    }
+
+    public void setAdditionalPrimaryKeyColumns(List<String> additionalColumnsKeys) {
+        this.additionalPrimaryKeyColumns = additionalColumnsKeys;
+    }
+
+    public void setIndexInsteadOfPrimaryKey(boolean indexInsteadOfPrimaryKey) {
+        this.indexInsteadOfPrimaryKey = indexInsteadOfPrimaryKey;
+    }
+
+    /**
+     * Returns SQL to create the tables for the given types.
+     *
+     * @return
+     */
+    public List<String> createTables(Class<? extends VaultEntity<?, ?>>... typeClasses) {
+        return Stream.of(typeClasses)
+                .map(type -> createTable(
+                        DynamicClassBinding.forDefinitionClass(getKeyType(type)),
+                        DynamicClassBinding.forDefinitionClass(type)))
+                .collect(Collectors.toList());
+
+
+    }
+
+    private Class<?> getKeyType(Class<?> type) {
+        try {
+            return type.getMethod("key").getReturnType();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("VaultEntity does not have a method key() despite it being part of the interface", e);
+        }
+    }
+
+    /**
+     * Returns a "CREATE TABLE" DDL statement which is able to store rows defined by the provided Avro schema.
+     *
+     * @param type
+     * @return
+     */
+    public String createTable(DynamicClassBinding keyType, DynamicClassBinding type) {
+        StringBuilder result = new StringBuilder();
+        String tableName = type.getTableName();
+        result.append("CREATE TABLE ").append(tableName).append(" (\n");
+
+        List<FieldMapping> keyFields = keyType.getFieldMappings();
+        Set<String> keyFieldNames = keyFields.stream().map(f -> f.getName()).collect(Collectors.toSet());
+        Set<String> auditFieldNames = DynamicClassBinding.forDefinitionClass(AuditInfo.class).getFieldMappings().stream().map(f -> f.getName()).collect(Collectors.toSet());
+        List<String> primaryKeys = new ArrayList();
+        List<FieldMapping> fieldMappings = new ArrayList<>(type.getFieldMappings());
+        sortFields(keyFieldNames, auditFieldNames, fieldMappings);
+        for (FieldMapping field : fieldMappings) {
+            String columnName = field.getColumnName();
+            if (additionalColumns.containsKey(columnName)) {
+                continue; // Caller overrides column definition
+            }
+            if (keyFieldNames.contains(field.getName())) {
+                primaryKeys.add(columnName);
+            }
+            boolean nullable = field.isNullable();
+            result.append("\t").append(columnName).append(" ").append(getSqlType(field.getType(), field.getSize(), field.getScale()));
+            if (!nullable) {
+                result.append(" NOT NULL");
+            }
+            result.append(",\n");
+        }
+
+        additionalColumns.forEach((name, definition) ->
+                result.append("\t").append(name).append(" ").append(definition).append(",\n"));
+
+        primaryKeys.addAll(additionalPrimaryKeyColumns);
+
+        String simpleTableName = tableName;
+        if (simpleTableName.contains(".")) {
+            simpleTableName = simpleTableName.substring(simpleTableName.lastIndexOf(".") + 1);
+        }
+        if (!indexInsteadOfPrimaryKey) {
+            result.append("\n\tCONSTRAINT PK_").append(simpleTableName)
+                    .append(" PRIMARY KEY (")
+                    .append(primaryKeys.stream().collect(Collectors.joining(", ")))
+                    .append(")");
+        } else {
+            // Remove last ,\n
+            Preconditions.checkState(result.toString().endsWith(",\n"));
+            result.setLength(result.length() - 2);
+        }
+        result.append("\n)");
+        if (indexInsteadOfPrimaryKey) {
+            result.append(";\n");
+            result.append("\n${IF_MSSQL} CREATE CLUSTERED INDEX PK_").append(simpleTableName).append( " ON ").append(tableName).append(" (")
+                    .append(primaryKeys.stream().collect(Collectors.joining(", ")))
+                    .append(")");
+            result.append("\n${IF_H2} CREATE INDEX PK_").append(simpleTableName).append( " ON ").append(tableName).append(" (")
+                    .append(primaryKeys.stream().collect(Collectors.joining(", ")))
+                    .append(")");
+        }
+        return result.toString();
+    }
+
+    private void sortFields(Set<String> keyFieldNames, Set<String> auditFieldNames, List<FieldMapping> fieldMappings) {
+        fieldMappings.sort((f1, f2) -> {
+            if (keyFieldNames.contains(f1.getName()) && !keyFieldNames.contains(f2.getName())) {
+                return -1;
+            }
+            if (keyFieldNames.contains(f2.getName()) && !keyFieldNames.contains(f1.getName())) {
+                return 1;
+            }
+            if (auditFieldNames.contains(f2.getName()) && !auditFieldNames.contains(f1.getName())) {
+                return -1;
+            }
+            if (auditFieldNames.contains(f1.getName()) && !auditFieldNames.contains(f2.getName())) {
+                return 1;
+            }
+            return f1.getName().compareTo(f2.getName());
+        });
+    }
+
+    private String getSqlType(Class<?> type, int size, int scale) {
+        if (type == String.class) {
+            return "NVARCHAR(" + (size == -1 ? "MAX" : size) + ")";
+        } else if (type == Integer.class || type == int.class) {
+            return "INTEGER";
+        } else if (type == Long.class || type == long.class) {
+            return "BIGINT";
+        } else if (type == Float.class || type == Double.class || type == float.class || type == double.class) {
+            return "FLOAT";
+        } else if (type == BigDecimal.class) {
+            if (size == -1) {
+                size = 20;
+            }
+            if (scale == -1) {
+                scale = 8;
+            }
+            return "DECIMAL(" + size + ", " + scale + ")";
+        } else if (type == Boolean.class || type == boolean.class) {
+            return "BIT";
+        } else if (type == LocalDate.class) {
+            return "DATE";
+        } else if (type == Instant.class) {
+            return "DATETIME2(7)";
+        } else {
+            throw new IllegalArgumentException("Type " + type.getName() + " is not yet supported by TypedEntity2DDL");
+        }
+    }
+
+}
+```
