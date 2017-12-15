@@ -1,6 +1,14 @@
 # Modelling Db fields and tables
 
 ## Specifically where entities are Uniquely keyed and change over time
+There are some good principals here for java/db modelling with keys/temporal/audit etc...
+
+### Domain Immutable classes mimicing the db tables but implementing the Entity
+```java
+@Jdbi(tableName="VAULT.InventoryPosition")
+@Value.Immutable
+public interface InventoryPosition extends VaultEntity<InventoryPositionKey, InventoryPosition> {
+```
 
 ### Generic field modelling and uses
 ```java
