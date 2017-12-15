@@ -1,0 +1,176 @@
+# From table to json-avro schema
+
+```java
+/**
+ * Uses database metadata to generate an Avro schema which can represent rows from the database.
+ * <p>
+ * Some non-standard properties are included in the schema (e.g. <code>db-table</code> and <code>db-column</code>) to
+ * allow the generated schema to be used for binding a database result set to Avro records.
+ */
+public class DDL2AvroSchema {
+
+    private final DataSource dataSource;
+    private final String catalog;
+    private final String schemaPattern;
+    private final String tablePattern;
+    private final String avroNamespace;
+
+    private Predicate<String> tablePredicate = tableName -> true;
+
+    public DDL2AvroSchema(DataSource dataSource, String catalog, String schemaPattern, String tablePattern,
+                          String avroNamespace) {
+        this.dataSource = dataSource;
+        this.catalog = catalog;
+        this.schemaPattern = schemaPattern;
+        this.tablePattern = tablePattern;
+        this.avroNamespace = avroNamespace;
+    }
+
+    public void setTablePredicate(Predicate<String> tablePredicate) {
+        this.tablePredicate = tablePredicate;
+    }
+
+    private static String toUpperCamelCase(String columnName) {
+        char[] chars = toLowerCamelCase(columnName).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    private static String toLowerCamelCase(String columnName) {
+        if (columnName.contains("_")) {
+            return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName);
+        } else {
+            char[] chars = columnName.toCharArray();
+            chars[0] = Character.toLowerCase(chars[0]);
+            for (int i = 1; i < chars.length && (i + 1 >= chars.length || Character.isUpperCase(chars[i + 1])); i++) {
+                chars[i] = Character.toLowerCase(chars[i]);
+            }
+            return new String(chars);
+        }
+    }
+
+    public String getDataSchema() {
+        try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+            write(buffer);
+            return buffer.toString("utf-8");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (SQLException e) {
+            throw new AvroException("Unexpected database error", e);
+        }
+    }
+
+    public void write(OutputStream out) throws IOException, SQLException {
+
+        JsonFactory jsonFactory = new JsonFactory();
+        JsonGenerator jsonGenerator = jsonFactory.createGenerator(out, JsonEncoding.UTF8);
+        jsonGenerator.useDefaultPrettyPrinter();
+
+        jsonGenerator.writeStartArray();
+
+        try (Connection connection = dataSource.getConnection()) {
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            try (ResultSet tables = databaseMetaData.getTables(catalog, schemaPattern, tablePattern, null)) {
+                while (tables.next()) {
+                    writeTableRecord(jsonGenerator, databaseMetaData, tables);
+                }
+            }
+        }
+
+        jsonGenerator.writeEndArray();
+        jsonGenerator.close();
+    }
+
+    private void writeTableRecord(JsonGenerator jsonGenerator, DatabaseMetaData databaseMetaData, ResultSet tables) throws SQLException, IOException {
+        String tableCatalog = tables.getString("TABLE_CAT");
+        String tableSchema = tables.getString("TABLE_SCHEM");
+        String tableName = tables.getString("TABLE_NAME");
+        if (tablePredicate.test(tableName)) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("type", "record");
+            jsonGenerator.writeStringField("namespace", avroNamespace);
+            jsonGenerator.writeStringField("name", tableNameToRecordName(tableName));
+            jsonGenerator.writeStringField("db-table", tableName);
+            jsonGenerator.writeArrayFieldStart("fields");
+            Set<String> primaryKeyColumns = findPrimaryKeys(databaseMetaData, tableCatalog, tableSchema, tableName);
+            try (ResultSet columns = databaseMetaData.getColumns(
+                    tableCatalog, tableSchema, tableName, null)) {
+                while (columns.next()) {
+                    writeColumnField(jsonGenerator, primaryKeyColumns, columns);
+                }
+            }
+            jsonGenerator.writeEndArray();
+            jsonGenerator.writeEndObject();
+        }
+    }
+
+    private Set<String> findPrimaryKeys(DatabaseMetaData databaseMetaData, String tableCatalog, String tableSchema,
+                                        String tableName) throws SQLException {
+        Set<String> primaryKeyColumns = new HashSet<>();
+        try (ResultSet primaryKeys = databaseMetaData.getPrimaryKeys(tableCatalog, tableSchema, tableName)) {
+            while (primaryKeys.next()) {
+                primaryKeyColumns.add(primaryKeys.getString("COLUMN_NAME"));
+            }
+        }
+        return primaryKeyColumns;
+    }
+
+    private void writeColumnField(JsonGenerator jsonGenerator, Set<String> primaryKeyColumns, ResultSet columns) throws SQLException, IOException {
+        String columnName = columns.getString("COLUMN_NAME");
+        int columnType = columns.getInt("DATA_TYPE");
+        String columnTypeName = columns.getString("TYPE_NAME");
+        int columnSize = columns.getInt("COLUMN_SIZE");
+        int decimalDigits = columns.getInt("DECIMAL_DIGITS");
+        boolean nullable = columns.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls;
+
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStringField("name", columnNameToFieldName(columnName));
+        jsonGenerator.writeStringField("db-column", columnName);
+        if (primaryKeyColumns.contains(columnName)) {
+            jsonGenerator.writeBooleanField("db-primary-key", true);
+        }
+        AvroType avroType = columnTypeToAvroType(columnType, columnTypeName, columnSize, decimalDigits);
+        if (avroType == AvroType.BYTES || avroType == AvroType.STRING) {
+            jsonGenerator.writeNumberField("db-size", columnSize);
+        }
+        if (nullable) {
+            jsonGenerator.writeArrayFieldStart("type");
+        } else {
+            jsonGenerator.writeFieldName("type");
+        }
+
+        if (avroType.getLogicalType() == null) {
+            jsonGenerator.writeString(avroType.getType());
+        } else {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("type", avroType.getType());
+            jsonGenerator.writeStringField("logicalType", avroType.getLogicalType());
+            if (avroType == AvroType.DECIMAL) {
+                jsonGenerator.writeNumberField("precision", columnSize);
+                jsonGenerator.writeNumberField("scale", decimalDigits);
+            }
+            jsonGenerator.writeEndObject();
+        }
+
+        if (nullable) {
+            jsonGenerator.writeString("null");
+            jsonGenerator.writeEndArray();
+        }
+
+        jsonGenerator.writeEndObject();
+    }
+
+    private String tableNameToRecordName(String tableName) {
+        return toUpperCamelCase(tableName);
+    }
+
+    private String columnNameToFieldName(String columnName) {
+        return toLowerCamelCase(columnName);
+    }
+
+    private AvroType columnTypeToAvroType(int columnType, String columnTypeName, int columnSize, int decimalDigits) {
+        return AvroType.getBySqlType(columnType, columnTypeName);
+    }
+
+}
+```
