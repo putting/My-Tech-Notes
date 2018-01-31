@@ -23,6 +23,13 @@ Write an algorithm to work out the closest (by address) to the manager.
 
 We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
 
+### Data: clientAddress.csv
+```csv
+client Id, Client Name, Client Address
+1, client 1, 1 main road, london, ec1
+2, client 2, 34 london road, london wc1
+```
+
 ```java
 class Customers {
 private String name;
@@ -36,12 +43,93 @@ private Address address; //This will be in the 20 A stret, london, EC1 format
 - Recogniton of sorting and getting Top 20 of something using java streams.
 - **Performance:** Say Service call to get Distance. ie Point/Distance is a remote service
     - What ways are there to call a remote service? i.e REST etc..????
-    - Batching calls for al pointss in one call.
+    - Batching calls for all points in one call.
     - How long will the code take to run?
         - ie What is the bottleneck. network, disk, individual calls
         - Monitoring/stats to identify slow points.
         - Big O for some parts???
 
+### My first attempt a solution
+```java
+public class FindNearest {
+
+    private List<Customer> customers = new ArrayList<>();
+
+    public List<Customer> findNearest(int n) {
+
+        //1. Create a starting point
+        Point startingPoint = new Point(1,1);
+
+        //2. Read the csv fil and transform into object. Maybe with
+        customers.add(new Customer(1, "cust1", "1, london street", null));
+        customers.add(new Customer(2, "cust2", "2, london street", null));
+        customers.add(new Customer(3, "cust3", "3, london street", null));
+        customers.add(new Customer(4, "cust4", "4, london street", null));
+        customers.add(new Customer(5, "cust5", "5, london street", null));
+
+        //3. Map the customer address to a geoLocation
+        List<Customer> customers = mapCustomerLocations(this.customers);
+
+        //4. Should then map this to a new object with distance from starting point
+        //.....
+        customers.forEach(c -> System.out.println(c.name + ":" + c.geoLocation.getDistanceTo(startingPoint)));
+
+        //5. Then we can sort by distance lowest to highest.
+        List<Customer> orderedCustomers = this.customers.stream()
+                .sorted(Comparator.comparing((c1) -> c1.geoLocation.getDistanceTo(startingPoint)))
+                .collect(Collectors.toList());
+
+        return orderedCustomers;
+    }
+
+    private List<Customer> mapCustomerLocations(List<Customer> customers) {
+
+        List<Customer> newCustomers = customers.stream()
+                .map(c -> {
+                    c.geoLocation = AddressMapper.map(c.address);
+                    return c;
+                })
+                .collect(Collectors.toList());
+
+        return newCustomers;
+    }
+
+    private static class AddressMapper {
+        static Point map(String address) {
+            Random random = new Random();
+            int x = random.nextInt(10);
+            int y = random.nextInt(10);
+            return new Point(x,y);
+        }
+    }
+
+}
+
+public class Customer {
+
+    public int id;
+    public String name;
+    public String address; //simple string for now...
+    public Point geoLocation; //should really be immutable
+
+    public Customer(int id, String name, String address, Point geoLocation) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.geoLocation = geoLocation;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", geoLocation=" + geoLocation +
+                '}';
+    }
+}
+```
 
 ``` java
 public static class Point
