@@ -5,6 +5,12 @@ Imagine you have been given a list of 20 customer's names including their addres
 A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
 
+###
+[ArcGIS good expl](https://developers.arcgis.com/java/10-2/guide/search-for-places-and-addresses.htm)
+The process of transforming an address or place name to a geographical location on a map is known as **geocoding**. The opposite task, searching for the nearest address to a particular point on a map using geographic coordinates, is referred to as **reverse geocoding**. 
+The primary purpose of geocoding services is to convert an address to an x,y coordinate.
+Describes Geocoding in detail.
+
 ## Assumptions
 - legacy table, can't change by adding columns etc..
 - small dataset to begin with. say 100 rows
@@ -22,6 +28,16 @@ Write an algorithm to work out the closest (by address) to the manager.
 - Take first n records, then fold...checking if any of the next n are samller then swap etc..** O(log n)**
 
 We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
+
+## Find closest k elements problem (inclkudes java code)
+[closest k problem](https://www.geeksforgeeks.org/find-k-closest-elements-given-value/)
+A simple solution is to do linear search for k closest elements.
+1) Start from the first element and search for the crossover point (The point before which elements are smaller than or equal to X and after which elements are greater). This step takes O(n) time.
+2) Once we find the crossover point, we can compare elements on both sides of crossover point to print k closest elements. This step takes O(k) time.
+
+The time complexity of the above solution is O(n).
+
+An Optimized Solution is to find k elements in O(Logn + k) time. The idea is to use **Binary Search** to find the crossover point and uses a sorted array. Takes mid-point and checks against upper and lower half. Then chooses that half.. repeat. Once we find index of crossover point, we can print k closest elements in O(k) time.
 
 ### Data: clientAddress.csv
 ```csv
