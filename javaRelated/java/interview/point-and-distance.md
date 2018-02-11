@@ -29,7 +29,7 @@ Describes Geocoding in detail.
 
 We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
 
-## Find closest k elements problem (inclkudes java code)
+## Find closest k elements problem (includes java code)
 [closest k problem](https://www.geeksforgeeks.org/find-k-closest-elements-given-value/)
 A simple solution is to do linear search for k closest elements.
 1) Start from the first element and search for the crossover point (The point before which elements are smaller than or equal to X and after which elements are greater). This step takes O(n) time.
