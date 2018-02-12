@@ -20,9 +20,12 @@ Describes Geocoding in detail.
 - Performance: Sorting (depending onn alg O(n2))  [http://bigocheatsheet.com/](http://bigocheatsheet.com/)
 
 ## Steps
-- Take the data into a structure
+- Read the data from a db table. jdbc, dao, (all records)
+- Take the data into a structure - A DTO or CustomerDbo (with Mapper).
+- Do they create an immutable EnhancedCustomer with distance?
 - Calculate the distance from begining point to each (and hold against name and maybe address)
-- Can then just sort and take first 10
+- Can then just sort (with Comparator or Comparable) and take first 10.
+- What is returned? Should just be the Customer (no need to expose internal distance). ie stream.map.
 
 ## Scala Fold design
 - Take first n records, then fold...checking if any of the next n are samller then swap etc..** O(log n)**
@@ -39,7 +42,7 @@ The time complexity of the above solution is O(n).
 
 An Optimized Solution is to find k elements in O(Logn + k) time. The idea is to use **Binary Search** to find the crossover point and uses a sorted array. Takes mid-point and checks against upper and lower half. Then chooses that half.. repeat. Once we find index of crossover point, we can print k closest elements in O(k) time.
 
-### Data: clientAddress.csv
+### Data: client address Table
 ```csv
 client Id, Client Name, Client Address
 1, client 1, 1 main road, london, ec1
@@ -55,10 +58,11 @@ private Address address; //This will be in the 20 A stret, london, EC1 format
 
 ## Testing the following
 - Ability to transalate an adddress into a computer useful structure. ie. Point
-- Point should have a method determin the distance between Points.
+- Point (geocoding) should have a method determine the distance between Points.
 - Recogniton of sorting and getting Top 20 of something using java streams.
-- **Performance:** Say Service call to get Distance. ie Point/Distance is a remote service
-    - What ways are there to call a remote service? i.e REST etc..????
+- **Performance:** Say Service call to get Distance. ie Point/Distance is a **remote service**
+    - How long ms/ 10 secs, 60 secs.... Where would the bottleneck be? (ie the http call)
+    - What ways are there to call a remote service? i.e REST protocol etc..????
     - Batching calls for all points in one call.
     - How long will the code take to run?
         - ie What is the bottleneck. network, disk, individual calls
