@@ -14,6 +14,6 @@
   - Conclusion Proposes **Elm** which is pure functional lang rather than js.
 
 ## Redux
-Full decription of Redux (start here)(https://medium.com/javascript-scene/10-tips-for-better-redux-architecture-69250425af44)
+Full decription of Redux [start here](https://medium.com/javascript-scene/10-tips-for-better-redux-architecture-69250425af44)
 Full video course here(https://egghead.io/courses/getting-started-with-redux)
 and building idiomatic.. (https://egghead.io/courses/building-react-applications-with-idiomatic-redux)
