@@ -1,5 +1,8 @@
 # Jdbi as used by Dropwizard
 
+Look into v3 (released Nov 2017) soon (http://jdbi.org/)
+[Summary of changes v2 -> 3](http://jdbi.org/#_upgrading_from_v2_to_v3)
+
 ## As used by xray. This uses jdbi templating to construct the sql
 - store sql in *.stg file with name(paramlist) and sql.
 - Uses StringTemplate3StatementLocator as shown below to inject sql
