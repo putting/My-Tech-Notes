@@ -14,9 +14,14 @@ The put() method of HashMap works in the principle of hashing. It is responsible
 The hashcode() method is used in conjunction with a hash function to find the correct location for the object into the bucket. 
 If a collision occurs then the entry object which contains both key and value is added to a linked list and that linked list is stored into the bucket location.
 
-### What is the requirement for an object to be used as key or value in HashMap?
+### What is the requirement for an object to be used as key in HashMap?
 The key or value object must implement equals() and hashcode() method. 
 The **hash code is used when you insert the key object** into the map while **equals are used when you try to retrieve a value** from the map.
+
+### What happens if hascode and Equals NOT overriden (hashcode contract)
+If hashCode is used as a shortcut to determine equality, then there is really only one thing we should care about: 
+**Equal objects should have the same hash code.**
+This is also why, if we override equals, we must create a matching hashCode implementation! Otherwise things that are equal according to our implementation would likely not have the same hash code because they use Object‘s implementation.
 
 ### What will happen if you try to store a key which is already present in HashMap?
 If you store an existing key in the HashMap then it will override the old value with the new value and put() will return the old value. 
