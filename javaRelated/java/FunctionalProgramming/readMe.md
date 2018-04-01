@@ -47,6 +47,41 @@ System.out.println(compose(triple, square).apply(3));
 27
 ```
 
+### Fns with Multiple Args
+Function<Integer, Function<Integer, Integer>>
+is the same as Integer -> Integer -> Integer. A fn is applied to an int, which takes an int and returns int.
+**NB.** This notation is important. eg. BinaryOperator add = x -> y -> x + y; See how fn from x to y resolves expr to int.
+Applying curried fn add: add.apply(3).apply(5)
+
+### Higher Order Fns
+In this eg 2 fns composed in hof. you start by applying the first argument, which gives you a new function
+to apply to the second argument. The result is a function, which is the composition of the two function arguments.
+```java
+Function<Integer, Integer> square = x -> x * x;
+Function<Integer, Integer> f = compose.apply(square).apply(triple);
+```
+### Compare Traditional class to Currying Fn
+This is the main difference between a curried function and a function of a tuple. **With a function of a tuple, all arguments are evaluated before the function is applied.** With the curried version, all arguments must be known before the function is totally applied, but a single argument can be evaluated before the function is partially applied to it.
+```java
+public class TaxComputer {
+private final double rate;
+public TaxComputer(double rate) {
+this.rate = rate;
+}
+public double compute(double price) {
+return price * rate + price;}
+}
+TaxComputer tc9 = new TaxComputer(0.09);
+double price = tc9.compute(12);
+//The same thing can be achieved with a function by partially applying it:
+Function<Double, Double> tc9 = addTax.apply(0.09);
+double price = tc9.apply(12.0);
+```
+
+### Variance (as in Co an contra variant for sub-typing)
+Variance describes how parameterized types behave in relation to subtyping. Covariance means that Matcher<Red> is considered a subtype of Matcher<Color> if Red is a subtype of Color. In such case, Matcher<T> is said to be covariant on T. If, on
+the contrary, Matcher<Color> is considered a subtype of Matcher<Red>, then Matcher<T> is said to be contravariant on T
+
 #### Question (TODO answer)
 why do you need function objects? Couldn’t you simply use methods?
 
