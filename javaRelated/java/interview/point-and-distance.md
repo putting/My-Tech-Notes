@@ -23,24 +23,16 @@ Describes Geocoding in detail.
 - Read the data from a db table. jdbc, dao, (all records)
 - Take the data into a structure - A DTO or CustomerDbo (with Mapper).
 - Do they create an immutable EnhancedCustomer with distance?
-- Calculate the distance from begining point to each (and hold against name and maybe address)
+- Calculate the distance from begining point to each (and hold against name and maybe address. earth flat.. use lib in final sol)
 - Can then just sort (with Comparator or Comparable) and take first 10.
+    A TreeMap is sometimes suggested (Red Black Tree). Requires Comparable or Comparator for keys.
+    - guaranteed log(n) time cost for the containsKey,get,put and remove operations
 - What is returned? Should just be the Customer (no need to expose internal distance). ie stream.map.
 
 ## Scala Fold design
 - Take first n records, then fold...checking if any of the next n are samller then swap etc..** O(log n)**
 
 We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
-
-## Find closest k elements problem (includes java code)
-[closest k problem](https://www.geeksforgeeks.org/find-k-closest-elements-given-value/)
-A simple solution is to do linear search for k closest elements.
-1) Start from the first element and search for the crossover point (The point before which elements are smaller than or equal to X and after which elements are greater). This step takes O(n) time.
-2) Once we find the crossover point, we can compare elements on both sides of crossover point to print k closest elements. This step takes O(k) time.
-
-The time complexity of the above solution is O(n).
-
-An Optimized Solution is to find k elements in O(Logn + k) time. The idea is to use **Binary Search** to find the crossover point and uses a sorted array. Takes mid-point and checks against upper and lower half. Then chooses that half.. repeat. Once we find index of crossover point, we can print k closest elements in O(k) time.
 
 ### Data: client address Table
 ```csv
@@ -68,6 +60,13 @@ private Address address; //This will be in the 20 A stret, london, EC1 format
         - ie What is the bottleneck. network, disk, individual calls
         - Monitoring/stats to identify slow points.
         - Big O for some parts???
+        
+### Follow up Question to create a System
+Make this into a system. So this sales manager is happy, but the others want the same and they move around the country a lot.
+- Requires an api, which allows the input of the Location to compare (this can used geoLocation from Phone)
+- Requires a REST endpoint or similar
+- Database optimisations? Saving geoLocation, batching calls to locationService, save all combinations of distance.
+- Caching Service? What are the downsides of this: Keeping in sync with data, eviction etc..
 
 ### My first attempt a solution
 ```java
@@ -164,8 +163,8 @@ public static class Point
         }
 
         /**
-         * For our purpose, square distance is good enough
-         * It allows to avoid the costly square root
+         * For our purpose, square distance is good enough. Assumes the earth is flat rather than curved.
+         * Should also apply square root to the result
          *
          * @param p Point to which we want the distance
          * @return Distance between current and p
@@ -184,3 +183,13 @@ public static class Point
         }
     }
 ```
+
+## Find closest k elements problem (includes java code)
+[closest k problem](https://www.geeksforgeeks.org/find-k-closest-elements-given-value/)
+A simple solution is to do linear search for k closest elements.
+1) Start from the first element and search for the crossover point (The point before which elements are smaller than or equal to X and after which elements are greater). This step takes O(n) time.
+2) Once we find the crossover point, we can compare elements on both sides of crossover point to print k closest elements. This step takes O(k) time.
+
+The time complexity of the above solution is O(n).
+
+An Optimized Solution is to find k elements in O(Logn + k) time. The idea is to use **Binary Search** to find the crossover point and uses a sorted array. Takes mid-point and checks against upper and lower half. Then chooses that half.. repeat. Once we find index of crossover point, we can print k closest elements in O(k) time.
