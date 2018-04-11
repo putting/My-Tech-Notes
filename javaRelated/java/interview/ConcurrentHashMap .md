@@ -1,5 +1,7 @@
 # ConcurrentHashMap 
 
+see here: http://www.baeldung.com/java-concurrent-map for full expl
+
 ## Summary
 Now we know What is ConcurrentHashMap in Java and when to use ConcurrentHashMap, it’s time to know and revise some important points about CHM in Java.
 
