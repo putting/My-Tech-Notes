@@ -7,6 +7,11 @@ ConcurrentHashMap=Thread safe.
 
 [full description of put/get here](http://www.java67.com/2013/06/how-get-method-of-hashmap-or-hashtable-works-internally.html)
 
+## Not Thread-Safe
+- The Getting of a value, so it can be then set is NOT atomic. 
+  Thread a does get(key) and returns null. Then goes to sleep. Thread B does get null and then sets value. Thread A awakes and then overwrites the preious value. eg. Using Incrementer based on current value.
+- ConcurrentHashMap provided better throughput, BUT also methods which are atomic for getting and setting.
+
 ## Questions
 
 ### How does put() method of HashMap work in Java?
