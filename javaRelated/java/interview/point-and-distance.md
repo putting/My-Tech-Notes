@@ -60,6 +60,8 @@ private Address address; //This will be in the 20 A stret, london, EC1 format
         - ie What is the bottleneck. network, disk, individual calls
         - Monitoring/stats to identify slow points.
         - Big O for some parts???
+    - Using a profiler to identify long-running methods.... 
+    - Write tests and benchmarks and use logging.
         
 ### Follow up Question to create a System
 Make this into a system. So this sales manager is happy, but the others want the same and they move around the country a lot.
