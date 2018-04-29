@@ -1,5 +1,10 @@
 # Functional Programming
 
+## Functional Programming in Java by Pierre-Yves Saumont
+[helpful source code](https://github.com/fpinjava/fpinjava/tree/master/fpinjava-parent/fpinjava-common/src/main/java/com/fpinjava/common)
+
+[Source code incl ex and sols](https://github.com/fpinjava/fpinjava)
+
 ## This is a really Good description (@cscalfani on medium)
 (https://medium.com/@cscalfani/so-you-want-to-be-a-functional-programmer-part-1-1f15e387e536)
 - Part 1: Pure functions, Immutability and recursion
