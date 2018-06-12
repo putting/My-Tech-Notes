@@ -1,5 +1,7 @@
 # Streaming Maps of values
 
+Using Jackson libs.
+
 ```scala
 import java.io.OutputStream
 import java.util.function.Consumer
