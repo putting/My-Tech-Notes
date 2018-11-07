@@ -1,6 +1,16 @@
 # ConcurrentHashMap 
 
 see here: http://www.baeldung.com/java-concurrent-map for full expl
+The explanation below needs updating from above link.
+Especially structure is arrah of nodes.
+Uses atomic operation compare and swap for updates.
+Reads do not block and they reflect the latest completed update?
+The table buckets are initialized lazily, upon the first insertion. Each bucket can be independently locked by locking the very first node in the bucket.
+Ensures that when 2 threads attempt to write to same key or value, that 1 thread execs completely before the other. ie they are NOT cache interleaved.
+looks like mal is divided into segments, then a hash is calculated inside segment. see her
+https://dzone.com/articles/how-concurrenthashmap-works-internally-in-java
+good diagram and explanations here
+http://javabypatel.blogspot.com/2016/09/concurrenthashmap-interview-questions.html
 
 ## Summary
 Now we know What is ConcurrentHashMap in Java and when to use ConcurrentHashMap, it’s time to know and revise some important points about CHM in Java.
