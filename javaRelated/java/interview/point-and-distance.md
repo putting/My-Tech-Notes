@@ -1,7 +1,7 @@
 # Point & Distance
 
 ## Description
-Imagine you have been given a list of 20 customer's names including their address details.
+Imagine you have been given a list of 100 customer's names including their address details.
 A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
 
