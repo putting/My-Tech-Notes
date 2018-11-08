@@ -27,6 +27,7 @@ HashBucketSize(array) =
 - Two threads writing to same segment/data will block T2 one UNTIL T1 is completed. ie **no interleaving**
   - HashMap is NOT synchronised so interleaving of threads occurs.
 - Does NOT allow null key or value.
+- HAsMap has infinite looping issue: http://javabypatel.blogspot.com/2016/01/infinite-loop-in-hashmap.html
 
 ## Main Points
 - PUT HashMap. 
