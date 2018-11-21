@@ -13,7 +13,7 @@ Describes Geocoding in detail.
 
 ## Assumptions
 - legacy table, can't change by adding columns etc..
-- small dataset to begin with. say 100 rows
+- small dataset to begin with. **say 100 rows**
 - Geolocations service. Initially can be part of solution, BUT then seen as separate service and maybe hosted externally.
     - This is part of the 'how long to run' question
     - Batching of request rather than single requests
@@ -23,10 +23,14 @@ Describes Geocoding in detail.
 - Read the data from a db table. jdbc, dao, (all records)
 - Take the data into a structure - A DTO or CustomerDbo (with Mapper).
 - Do they create an immutable EnhancedCustomer with distance?
-- Calculate the distance from begining point to each (and hold against name and maybe address. earth flat.. use lib in final sol)
+- Calculate the distance from begining point to each (and hold against name and maybe address. 
+    Ask if they know how that distance might be calculated in lib. ie Pythagoras and
+    what assumptions that involves in practice. ie. flat earth not curved. 
+    use lib in final sol)
 - Can then just sort (with Comparator or Comparable) and take first 10.
     A TreeMap is sometimes suggested (Red Black Tree). Requires Comparable or Comparator for keys.
     - guaranteed log(n) time cost for the containsKey,get,put and remove operations
+    - If they use a Map and the key is a Double. What happens with 2 identical distances?
 - What is returned? Should just be the Customer (no need to expose internal distance). ie stream.map.
 
 ## Scala Fold design
@@ -49,7 +53,7 @@ private Address address; //This will be in the 20 A stret, london, EC1 format
 ```
 
 ## Testing the following
-- Ability to transalate an adddress into a computer useful structure. ie. Point
+- Ability to transalate an adddress into a computer useful structure. ie. Pointof Coordinate.
 - Point (geocoding) should have a method determine the distance between Points.
 - Recogniton of sorting and getting Top 20 of something using java streams.
 - **Performance:** Say Service call to get Distance. ie Point/Distance is a **remote service**
