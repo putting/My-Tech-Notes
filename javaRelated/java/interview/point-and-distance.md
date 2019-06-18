@@ -4,6 +4,12 @@
 Imagine you have been given a list of 100 customer's names including their address details.
 A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
+This is similar to the Travelling Salesman Problem (TSP), but MUCH simpler as we are only asking to find nearest n, NOT find the shortes/quickest route through each location.
+
+### TSP
+[TSP](https://simple.wikipedia.org/wiki/Travelling_salesman_problem)
+Based on graph theory of nodes and edges (lines)
+also [java solution](https://www.baeldung.com/java-simulated-annealing-for-traveling-salesman) 
 
 ###
 [ArcGIS good expl](https://developers.arcgis.com/java/10-2/guide/search-for-places-and-addresses.htm)
@@ -177,9 +183,9 @@ public static class Point
          */
         public int getDistanceTo(Point p)
         {
-            int dx = this.x - p.x;
-            int dy = this.y - p.y;
-            return dx * dx + dy * dy;
+            int dx = Math.abs(this.x - p.x)
+            int dy = Math.abs(this.y - p.y)
+            return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
         }
 
         @Override
