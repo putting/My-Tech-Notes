@@ -4,11 +4,11 @@
 Imagine you have been given a list of 100 customer's names including their address details.
 A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
-This is similar to the Travelling Salesman Problem (TSP), but MUCH simpler as we are only asking to find nearest n, NOT find the shortes/quickest route through each location.
+This is similar to the TSP, but MUCH simpler as we are only asking to find nearest n, NOT find the shortes/quickest route through each location.
 
-### TSP
+### Travelling Salesman Problem (TSP)
 [TSP](https://simple.wikipedia.org/wiki/Travelling_salesman_problem)
-Based on graph theory of nodes and edges (lines)
+Based on graph theory of nodes and edges (lines). Visiting all nodes is a Factorial of noOfNodes (eg 10 * 9 * 8... /2 (as 2-way edges))
 also [java solution](https://www.baeldung.com/java-simulated-annealing-for-traveling-salesman) 
 
 ###
