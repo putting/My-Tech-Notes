@@ -5,13 +5,13 @@ Very good artcile here: http://javabypatel.blogspot.com/2016/09/concurrenthashma
 ## Summary
 ConcurrentHashMap (CHM) is the same as HashMap, but includes an additional array of *Segments*.
 Locking is applied at the segment level. So two writes to the same segment will block. Guarantees that 1 will NOT be interleaved with other. 
-Q. Why is HashMap not thread-safe then?
+Q. Why is HashMap not thread-safe then? Infinite loop problem, where rehashing while beinf read by another thread. Interleaving also?
 Offers O(1) time complexity for both get and put operation.
 
 ### Structure
 An index of Segments. Each of which is a pointer to a single **HashTable NOT HashMap**. Some diagrams in above are incorrect.
-- Segment array ->
-- HashEntry array (result of bucketing) ->
+- Segment array -> based on the concurrency level
+- HashEntry array (result of bucketing) -> using hashcodes
 - LinkedList of HashEntrys
 
 ### Sizing
@@ -21,15 +21,23 @@ HashBucketSize(array) =
 
 ## Performance
 - Locking is per Segment (ie The n buckets in a segment).
+- Increase no of segments to improve concurrency. Trade-off if un-used segments, then wasted locks/space of additional HashMap.
 - Reads are non-blocking
+- O(1) with help of
+  - Good hashcode method which evenly distributes across all buckets
+  - Each put checks Threashold limit of 0.75, if so then rehashing.
+  - Rehashing occurs also when too many key collisions, which increases entries in a bucket.
 
 ## Thread-Safety
 - Two threads writing to same segment/data will block T2 one UNTIL T1 is completed. ie **no interleaving**
   - HashMap is NOT synchronised so interleaving of threads occurs.
 - Does NOT allow null key or value.
-- HAsMap has infinite looping issue: http://javabypatel.blogspot.com/2016/01/infinite-loop-in-hashmap.html
+- Reads are non-blocking. If an update and read occur in same segment, the returned value will reflect the most recently
+completed update.
+- HasMap has infinite looping issue: http://javabypatel.blogspot.com/2016/01/infinite-loop-in-hashmap.html
 
 ## Main Points
+- Put CHM. Determine segment index, then as with HashMap:
 - PUT HashMap. 
   a) Get hashcode from key
   b) Evaluate hashcode to determine bucket.
