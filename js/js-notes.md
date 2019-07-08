@@ -29,4 +29,22 @@ But can also
 const sam = { name: 'Sam' , age: 2 };
 console.log(sam);
 console.log({...sam, age: 3}); //copies and updates the age property
-``
+```
+
+### Sort and Slice and Fn with default value
+Sort - changes the array being sorted.
+Slice - Makes a copy of an array.
+localeCompare - compares in the locale of the browser.
+default param - makes the fn more generic. BUT then you could pass in the fn to sort as a param...
+
+```js
+const sortByTitle = function (books, ascending = true ) {
+  const multiplier = ascending ? 1 : -1;
+  const byTitle = function (book1, book2) {
+    return book1.title.localeCompare(book2.title) * multiplier;
+  };
+  return books.slice().sort(byTitle);
+};
+```
+
+
