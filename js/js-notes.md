@@ -47,4 +47,20 @@ const sortByTitle = function (books, ascending = true ) {
 };
 ```
 
+## Symbol
+- Can be used for enums as unique
+- Implementing in-built methods. eg iterator. So a custom class can support iteration. see p154 of Rediscovering..
+  [Symbol.iterator]() {.....
+- Providing an interface-like object
+
+## Generastors
+A custom class can be converted to provide iteration by combining Symbol.iterator method and a Generator (see *).
+Yield pauses exec returning value to caller, waiting for next() to be called.
+```js
+*[Symbol.iterator]() {  //could replace with *suits() {.. but then need to call for ( const suit of deck.suits()) {..
+for ( const shape of this.suitShapes) {
+yield shape;
+}
+}
+```
 
