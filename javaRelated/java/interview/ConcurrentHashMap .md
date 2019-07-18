@@ -47,6 +47,8 @@ completed update.
 ## Issues
 - Design of hascode and equals. What is the contract?
   - Two objects can have same hashcode, BUT equals must uniquely identify.
+  - Objects that are equal return the same hashcode.
+  - Always override hascode and equals. 
 
 ## Hash code
 - Worst design is single hashcode for all keys. This is a linkedList
