@@ -2,6 +2,29 @@
 
 Pretty involved and not sure how this ties in with retrofit, which is def used see below (retrofitApiMethod)
 
+## The one concrete class
+The @Rest is the tag which signifiesd to dali to generate
+```java
+@Path("refdata")
+@Rest
+public interface RefDataResource {
+    @Timed
+    @GET
+    @Path("/cache/refresh")
+    void triggerRefDataCacheRefresh();
+
+    @Timed
+    @Path("/legalEntities/list")
+    ImmutableList<BookingCompanyVciToLegalEntityMappingDbo> legalEntityBookingCompMapping();
+
+    @Timed
+    @Path("/commodity/list")
+    ImmutableList<String> commodities();
+}
+```
+
+## Generates the client/server
+
 ```java
 package com.mercuria.dali.annotationprocessors;
 
