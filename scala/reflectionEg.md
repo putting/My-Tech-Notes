@@ -1,6 +1,11 @@
 # Reflects on the Symbols (ie constants in an object)
 
 Useful to get the list of columns for a dataframe
+Can also be used to get all the val symbles in an object.
+eg object abc {
+val col1 = 'col1
+val col2 = 'col2
+}
 
 ```scala
   private def symbolValues[T: ClassTag](obj: T): Iterable[String] = {
