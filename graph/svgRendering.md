@@ -1,4 +1,9 @@
-# Dot (is the equiv of windows exe) Render to SVG
+# Dot (software) Render to SVG
+
+## Softwsre used (dot)
+(https://graphviz.gitlab.io/)
+
+Already installed on linux via maven, but required to be installed on windows client.
 
 ## Creates an svg file, which is then converted into a String for UI
 
