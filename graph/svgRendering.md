@@ -48,3 +48,66 @@ object DotRender {
 }
 
 ```
+
+## Server returns SVG XML
+```java
+    @GET
+    @Path("graphSubledger/{asOfDate}/{dataLoadMode}/graph.svg")
+    @Produces(MediaType.APPLICATION_SVG_XML)
+    String graphSubledger(LocalDate asOfDate, DataLoadMode dataLoadMode);
+```
+
+## UI uses a ReactSvg component (provided)
+
+```js
+import React, { useState } from 'react';
+import styles from './PipelineVisualisation.module.css';
+import { Item, Toolbar } from 'devextreme-react/toolbar';
+import { SelectBox } from 'devextreme-react/select-box';
+import { ReactSVG } from 'react-svg';
+import svgPanZoom from 'svg-pan-zoom';
+
+interface Pipeline {
+  name: string;
+  url: string;
+}
+
+const PipelineVisualisation: React.FC = () => {
+  const [pipeline, setPipeline] = useState<Pipeline | null>(null);
+  return (
+    <div className={styles.gridContainer}>
+      <Toolbar className={styles.toolbar}>
+        <Item>
+          <SelectBox
+            items={[
+              { name: 'Subledger', url: '/api/spark/graphSubledger/2018-12-31/AUDIT/graph.svg' },
+              { name: 'Stock Report', url: '/api/spark/graphStockReportPipelines/2018-12-31/AUDIT/graph.svg' }
+            ]}
+            selectedItem={pipeline}
+            displayExpr="name"
+            onSelectionChanged={(e) => setPipeline(e.selectedItem)}
+          />
+        </Item>
+      </Toolbar>
+      {pipeline !== null && (
+        <ReactSVG
+          loading={() => <span>Loading...</span>}
+          className={styles.container}
+          src={pipeline?.url ?? ''}
+          beforeInjection={(svg) => {
+            svg.setAttribute('style', 'height:inherit');
+          }}
+          afterInjection={(err, svg) => {
+            svgPanZoom(svg as HTMLElement, {
+              zoomScaleSensitivity: 0.5
+            });
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default PipelineVisualisation;
+
+```
