@@ -1,4 +1,8 @@
-# Use of Code Gen and annotations
+# DALI Use of Code Gen and annotations
+
+Includes RestGenerator and RestClientGenerator
+
+Bascially jax-rs-ws services and clients
 
 Pretty involved and not sure how this ties in with retrofit, which is def used see below (retrofitApiMethod)
 
