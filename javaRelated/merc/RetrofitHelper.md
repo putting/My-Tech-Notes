@@ -1,6 +1,7 @@
 # Retrofit Helper
 
-
+Looks like a wrapper class for Retrofit, which hides the creation of the Call and mainly
+manages exceptions and retries and logging.
 
 ```java
 package com.mercuria.dali.rest;
