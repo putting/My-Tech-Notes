@@ -84,6 +84,19 @@ public interface UploadService {
 ### The REST Service is simple, but generated RetrofitSpreadsheetUploadServiceClient does what?
 Note the FileData which is a byte[] interface
 ```java
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
+
+@Value.Immutable
+@JsonSerialize(as = ImmutableFileData.class)
+@JsonDeserialize(as = ImmutableFileData.class)
+public interface FileData {
+
+    byte[] content();
+
+}
+
 import com.mercuria.dali.rest.Rest;
 
 import javax.ws.rs.POST;
