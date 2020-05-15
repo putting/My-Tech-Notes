@@ -1,5 +1,15 @@
 # Java Stuff to Remember
 
+## JDK11 Features vs 8
+see https://codete.com/blog/java-8-java-11-quick-guide/
+- modules
+- Immutable collections. Set.of("John", "George", "Betty") or Map.of("John", 1, "Betty", 2)
+- var for local variables without type
+- jshell REPL
+- private methods in interfaces
+- Optional.ifPresentOrElse() & Optional.Stream()
+
+
 ### MUST Read
   - [Banking eg of Rx, MS & REST](https://github.com/putting/Documentation/blob/master/javaRelated/java/Reactive/banking-eg-rx-aka-ms.md)
   - [DDD BullsFirst eg good - see noted](https://github.com/matthewjosephtaylor/java-blockchain)
