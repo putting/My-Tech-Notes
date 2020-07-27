@@ -1,7 +1,15 @@
-# ava Service Provider Interface
+# Java Service Provider Interface
 
 Java 6 has introduced a feature for discovering and loading implementations matching a given interface: Service Provider Interface (SPI).
 An aoi which can provide to client code a ist of implementations.
+
+## Google AutoService
+This is an annotation processor library that helps us with generating Java Service Provider Interface (SPI) configuration files.
+Google AutoService is an open source code generator tool, developed under the Google Auto project. There are also two other tools besides AutoService: AutoValue and AutoFactory.
+
+The purpose of this library is to save effort and time and, at the same time, to prevent misconfiguration
+
+https://www.baeldung.com/google-autoservice
 
 The eg given is a bunch of Ccy providers, which is listed to the client and xrates given.
 
