@@ -1,5 +1,7 @@
 # Payloads
 
+important to ensure there is a control header with Tx and the concept of BusinessDto payloads of type T.
+Swagger to document.
 
 ## Main Message or DTO
 NB. Its Generic supporting multiple Business Types, which extend BusinessDto for the payload
