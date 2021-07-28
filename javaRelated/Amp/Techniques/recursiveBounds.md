@@ -3,7 +3,10 @@
 Interesting recursive approach. Used typically in abstract classes or parent classes.
 It defines a bound for child classes so that:
 - the same types are used for a comparison (method in parent). `eg cap.CompareTo(bus) is wrong
-- The correct subType is used rather than Object (ie unbounded types)
+- The correct subType is used rather than Object (ie unbounded types). T is erased to Object.
+
+simplest eg from java api, where a class is comparable to itself. which is what you want usually for comparators. This eg does not use inheritance though.
+`public class SampleClass<E extends Comparable<SampleClass>>`
 
 ## Examples
 
