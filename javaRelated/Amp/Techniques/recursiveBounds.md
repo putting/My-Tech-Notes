@@ -36,6 +36,18 @@ public interface BusinessDto<T extends BusinessDto<T>> extends Serializable {
         return result;
     }
 }
+and child passes its own Type as Generic Param
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldNameConstants
+@ApiModel(description = "Data transfer object for cost. To be encapsulated into a wrapper DTO",
+        parent = BusinessDto.class)
+public class CostDto implements BusinessDto<CostDto> {
+...etc
+```
 ```
 and this T extends the BusinessDto not itself, which is fine as its the business payload
 ```java
