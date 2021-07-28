@@ -16,7 +16,7 @@ https://dzone.com/articles/introduction-generics-java-%E2%80%93-1
 ## Amp egs
 NB. If we remove the bound from BusinessDto then there is a compiule error in `CommApiDto.<T>builder()`
 This is because the ComApiDto has the Business bound and is required to have T BusinessDto payload.
-Note the cast (T) to self which MUST be added to a CommApi of the SAME type.
+Note the cast (T) to self which MUST be added to a CommApi of the SAME type.Also the compiler compiler does not know whether or not this conversion is possible, even though it is because T by definition is bounded by BusinessDto<T>
 ```java
 public interface BusinessDto<T extends BusinessDto<T>> extends Serializable {
 
