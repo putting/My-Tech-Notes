@@ -6,5 +6,4 @@ Its interesting how the orchestrating thread will wait for a future (can poll an
 
 Event based is more like a callback where the worker thread notifies when its finished.
 
-[Java8](http://www.ibm.com/developerworks/java/library/j-jvmc3/index.html)
-[Java 8 concurrency Basics](http://www.ibm.com/developerworks/java/library/j-jvmc2/index.html)
+https://www.baeldung.com/java-concurrency-interview-questions
