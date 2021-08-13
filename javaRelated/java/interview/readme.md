@@ -6,6 +6,11 @@
 
 TODO: BubbleSOrt, FizzBuzz and memory leaks
 
+## Top Algorithm Questions and Solutions
+http://www.codespaghetti.com/java-algorithms-questions/
+https://www.guru99.com/algorithm-interview-questions.html
+
+
 ## Baeldung Articles
 - https://www.baeldung.com/java-concurrency-interview-questions
 - https://www.baeldung.com/java-memory-management-interview-questions
