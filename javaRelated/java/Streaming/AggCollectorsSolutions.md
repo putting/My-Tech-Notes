@@ -30,6 +30,7 @@ Map<StateCityGroup, RatePriceAggregation> mapAggregation = taxes.stream().collec
 ```
 
 ## Final and most complex sollution, but can be generalized to many problems:
+Its impressive the way a final calc can be done here after all other processing. ie u-> new Tax. takes the values from prev reducing collector
 ```java
 Map<StateCityGroup, TaxEntryAggregation> groupByAggregation = taxes.stream().collect(
     groupingBy(p -> new StateCityGroup(p.getState(), p.getCity()), 
