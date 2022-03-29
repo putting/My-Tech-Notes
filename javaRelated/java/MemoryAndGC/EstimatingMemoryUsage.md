@@ -21,3 +21,12 @@ Now we know how to calculate Java Object, Java Primitive, and Java Primitive Wra
 https://dzone.com/articles/how-to-estimate-object-memory-allocation-in-java
 
 eg Using VisualVM to see heap sized used by objects. ie How they are allocated
+
+## Compressed OOPs (Ordinary Object Pointers) in the JVM
+https://www.baeldung.com/jvm-compressed-oops
+
+Oops are equivalent to native C pointers. The instanceOops are a special kind of oop that represents the object instances in Java.
+Discusses how 64bit can waste more mem thatn 32bit.
+JVM pads objects so multiple of 8 bytes.
+
+### ZGC for low latency from java 15
