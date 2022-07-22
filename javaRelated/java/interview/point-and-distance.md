@@ -6,7 +6,7 @@ A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
 
 ## Instructions
-*You are expected to write a method named `FindNearestNCustomers`*, preferably in Java, but we are not looking for perfect syntax.
+*You are expected to write a method named `FindNearestCustomers(int noOfCustomers)`*, preferably in Java, but we are not looking for perfect syntax.
 Feel free to assume api's from your favourite libraries are available or your code can just assume a library exists if that simplifies things for you.
 
 This is an iterative coding exercise, so please ask questions as you progress and we will provide hints along the way.
