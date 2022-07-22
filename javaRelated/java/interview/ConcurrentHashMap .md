@@ -3,8 +3,8 @@ Very good artcile here: http://javabypatel.blogspot.com/2016/09/concurrenthashma
 
 
 ## Summary
-ConcurrentHashMap (CHM) is the same as HashMap, but includes an additional array of *Segments*.
-Locking is applied at the segment level. So two writes to the same segment will block. Guarantees that 1 will NOT be interleaved with other. 
+ConcurrentHashMap (CHM) is the same as HashMap, but includes an additional array of *Nodes*, each node has a table bucket (Many key-value's).
+Locking is applied at the node level. So two writes to the same node will block. Guarantees that 1 will NOT be interleaved with other. 
 
 Q. Why is HashMap not thread-safe then? Infinite loop problem, where rehashing while being read by another thread. Interleaving also?
 Offers O(1) time complexity for both get and put operation.
