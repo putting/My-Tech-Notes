@@ -5,7 +5,8 @@ Very good artcile here: http://javabypatel.blogspot.com/2016/09/concurrenthashma
 ## Summary
 ConcurrentHashMap (CHM) is the same as HashMap, but includes an additional array of *Segments*.
 Locking is applied at the segment level. So two writes to the same segment will block. Guarantees that 1 will NOT be interleaved with other. 
-Q. Why is HashMap not thread-safe then? Infinite loop problem, where rehashing while beinf read by another thread. Interleaving also?
+
+Q. Why is HashMap not thread-safe then? Infinite loop problem, where rehashing while being read by another thread. Interleaving also?
 Offers O(1) time complexity for both get and put operation.
 
 ### Structure
@@ -20,8 +21,8 @@ SegmentSize(array default 16) = nearest 2*n >= currencyLevel. So default cl=16, 
 HashBucketSize(array) = 
 
 ## Performance
-- Locking is per Segment (ie The n buckets in a segment).
-- Increase no of segments to improve concurrency. Trade-off if un-used segments, then wasted locks/space of additional HashMap.
+- Locking is per array of nodes as table buckets (prior java 8 Segments).
+- Increase no of nodes to improve concurrency. Trade-off if un-used segments, then wasted locks/space of additional HashMap.
 - Reads are non-blocking
 - O(1) with help of
   - Good hashcode method which evenly distributes across all buckets
@@ -37,7 +38,7 @@ completed update.
 - HasMap has infinite looping issue: http://javabypatel.blogspot.com/2016/01/infinite-loop-in-hashmap.html
 
 ## Main Points
-- Put CHM. Determine segment index, then as with HashMap:
+- Put CHM. Determine node index, then as with HashMap:
 - PUT HashMap. 
   a) Get hashcode from key
   b) Evaluate hashcode to determine bucket.
