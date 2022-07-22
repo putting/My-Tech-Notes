@@ -6,9 +6,10 @@ A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
 
 ## Instructions
-You are expected to write a method named `FindNearestNCustomers`, preferably in Java, but we are not looking for perfect syntax.
+*You are expected to write a method named `FindNearestNCustomers`*, preferably in Java, but we are not looking for perfect syntax.
 Feel free to assume api's from your favourite libraries are available or your code can just assume a library exists if that simplifies things for you.
 This is an iterative coding exercise, so please ask questions as you progress and we will provide hints along the way.
+No test methods are required.
 
 ### Input Data: client address Table
 ```csv
@@ -16,7 +17,7 @@ client Id, Client Name, Client Address
 1, client 1, 1 main road, london, ec1
 2, client 2, 34 london road, london wc1
 ```
-
+Code to read from the above table/file is not required, assume a function already exists.
 
 This is similar to the TSP, but MUCH simpler as we are only asking to find nearest n, NOT find the shortes/quickest route through each location.
 
@@ -50,7 +51,7 @@ Describes Geocoding in detail.
 - Can then just sort (with Comparator or Comparable) and take first 10.
     A TreeMap is sometimes suggested (Red Black Tree). Requires Comparable or Comparator for keys.
     - guaranteed log(n) time cost for the containsKey,get,put and remove operations
-    - If they use a Map and the key is a Double. What happens with 2 identical distances?
+    - If they use a Map and the key is a Double. *What happens with 2 identical distances?*
 - What is returned? Should just be the Customer (no need to expose internal distance). ie stream.map.
 
 ## Scala Fold design
