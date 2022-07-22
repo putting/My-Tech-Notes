@@ -115,7 +115,10 @@ public class FindNearest {
         //.....
         customers.forEach(c -> System.out.println(c.name + ":" + c.geoLocation.getDistanceTo(startingPoint)));
 
-        //5. Then we can sort by distance lowest to highest.
+        //5. Then we can sort by distance lowest to highest. NB Must be sorted on distance with Customer object
+        //Could sort like this .sorted((p1, p2)->p1.x.compareTo(p2.x))
+        //if the elements of this stream are not Comparable, a java.lang.ClassCastException may be thrown
+        //if using a TreeMap, then the key is the distance (what if 2 the same)?
         List<Customer> orderedCustomers = this.customers.stream()
                 .sorted(Comparator.comparing((c1) -> c1.geoLocation.getDistanceTo(startingPoint)))
                 .collect(Collectors.toList());
