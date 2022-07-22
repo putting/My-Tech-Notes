@@ -1,9 +1,23 @@
 # Point & Distance
 
-## Description
+## Problem Description
 Imagine you have been given a list of 100 customer's names including their address details.
 A manager is in town and only has time to visit the nearest 20 customers.
 Write an algorithm to work out the closest (by address) to the manager.
+
+## Instructions
+You are expected to write a method named `FindNearestNCustomers`, preferably in Java, but we are not looking for perfect syntax.
+Feel free to assume api's from your favourite libraries are available or your code can just assume a library exists if that simplifies things for you.
+This is an iterative coding exercise, so please ask questions as you progress and we will provide hints along the way.
+
+### Input Data: client address Table
+```csv
+client Id, Client Name, Client Address
+1, client 1, 1 main road, london, ec1
+2, client 2, 34 london road, london wc1
+```
+
+
 This is similar to the TSP, but MUCH simpler as we are only asking to find nearest n, NOT find the shortes/quickest route through each location.
 
 ### Travelling Salesman Problem (TSP)
@@ -44,12 +58,6 @@ Describes Geocoding in detail.
 
 We have an List of the following. So these need to be translated into a Customer/Point objects. These objects may well store distanceFromDepot to enable sorting.
 
-### Data: client address Table
-```csv
-client Id, Client Name, Client Address
-1, client 1, 1 main road, london, ec1
-2, client 2, 34 london road, london wc1
-```
 
 ```java
 class Customers {
