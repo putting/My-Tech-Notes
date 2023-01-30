@@ -1,5 +1,13 @@
 # 2nd largest number in array
 
+## The Question
+Find Second Largest Number in an Array:
+
+int a[]={1,2,5,6,3,2};
+public static int getSecondLargest(int[] a){
+//TODO: Implement
+}
+
 ## Without collections
 ```
 public static int getSecondLargest(int[] a, int total){  
