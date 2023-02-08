@@ -7,9 +7,12 @@ The rules of the FizzBuzz game are very simple. Iterate through integers up to a
      * Say Buzz if the number is divisible by 5.
      * Say FizzBuzz if the number is divisible by both 3 and 5.
      * Return the number itself, if the number is not divisible by 3 and 5
+     
+```
 Example     
 Input: upToAndIncluding = 5
 Output: ["1","2","Merc","4","uria"]
+```
 
 ```
 class Mercuria
