@@ -7,6 +7,10 @@ The rules of the FizzBuzz game are very simple. Iterate through integers up to a
      * Say Buzz if the number is divisible by 5.
      * Say FizzBuzz if the number is divisible by both 3 and 5.
      * Return the number itself, if the number is not divisible by 3 and 5
+     
+     Follow up question: How would you optimise your code:
+        * You can store the largest value requested and associated List. Any smaller number is a subset
+        * Caching.....
 
 ```
 class Mercuria
