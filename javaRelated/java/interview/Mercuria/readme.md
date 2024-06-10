@@ -1,5 +1,8 @@
 # Mercuria Interview Questions
 
+## Sharing code
+https://codeshare.io/
+
 ## Initial Java Questions
 - Explain how a HashMap workins in Java. Follow up on what makes a good key. Is it threadsafe?
 - What do you understand by Immutability? How do you make a class immutable?
