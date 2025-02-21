@@ -17,9 +17,12 @@ We are on-prem not cloud:
 Intro
 1) On his cv he said he designed a scalable... So walk us through the main tech/design decisions taken and whether 
 there are better alternatives.
+
+### Considerations
 Please explain how you would build a scalable pipeline for Mercuria's trade data. Consider:
 - Ingestion, Transformation and Storage, Optimization & Monitoring:
 - What Technologies at each stage?
+- What were the challenges, what tech or different design decisions you would take retrospectively?
 
 ✔ How would you design a scalable data pipeline for ingesting, transforming, and storing data daily?
 Answer:
