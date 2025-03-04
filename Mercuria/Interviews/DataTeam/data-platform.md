@@ -1,6 +1,11 @@
 # 2025-02-21 Data Team Interviews
 
-## Walid AL AKHRAS 2025-02-21
+## ANTONELLO BENEDETTO 2025-03-04
+## Arvind Shrivastava 2025-03-04
+## Walid AL AKHRAS 2025-02-21 - Not recommended for progression due to lack of team leadership
+
+## Ask about Team Leadership
+- How does he Lead his team? : Scrum, Design sessions, Merge Reviews, Sonar etc.... to ensure coding quality
 
 Higher-level / Architecture
 - Canonical Model (owner)
