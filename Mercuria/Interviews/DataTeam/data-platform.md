@@ -16,6 +16,18 @@ We are on-prem not cloud:
 - Dagster
 - Canonical Model - Proto definitions
 
+## Overview of Topics to be discussed
+- Managing small team
+  	- Scrum, codequality dev processes
+- ETL
+	- Discussion of his own implementation, challenges and design decisision
+ - Ask if creating a new Strategic Data Platform what approach would he take
+   	- Medallion?
+   	- Orchestration
+   	- Warehouse design
+   	- Security
+   	- Canonical Model
+
 ## From ChatGPT
 ### Data Architecture & Pipeline Design
 
